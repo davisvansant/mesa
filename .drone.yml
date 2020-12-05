@@ -12,7 +12,7 @@ steps:
       - rustc --version
       - cargo clippy --version
       - cargo fmt --version
-      #- cargo fmt -- --check
-      #- cargo clippy --all-targets --all-features
-      #- cargo check --workspace
-      #- cargo test --workspace
+      - cargo fmt -- --check
+      - cargo clippy --all-targets --all-features
+      - cargo check --workspace
+      - cargo test --workspace
