@@ -1,5 +1,10 @@
 use clap::{crate_name, crate_version, App, SubCommand};
 
+mod build;
+mod erode;
+mod form;
+mod view;
+
 fn main() {
     let build = SubCommand::with_name("build")
         .about("build and create your mesa")
@@ -24,10 +29,10 @@ fn main() {
         .get_matches();
 
     match mesa.subcommand_name() {
-        Some("build") => println!("build!"),
-        Some("view") => println!("view!"),
-        Some("erode") => println!("erode!"),
-        Some("form") => println!("form!"),
+        Some("build") => build::mesa_build(),
+        Some("view") => view::mesa_view(),
+        Some("erode") => erode::mesa_erode(),
+        Some("form") => form::mesa_form(),
         _ => println!("{}", mesa.usage()),
     }
 }
