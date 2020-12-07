@@ -20,10 +20,14 @@ fn main() {
         .about("form (finalize and release) your mesa")
         .help("form (finalize and release) your mesa");
 
+    let survey = SubCommand::with_name("survey")
+        .about("survey (prepare and evaluate) to form your mesa")
+        .help("survey (prepare and evaluate) to form your mesa");
+
     let mesa = App::new(crate_name!())
         .version(crate_version!())
         .about("| mesa - an isolated place")
-        .subcommands(vec![build, view, erode, form])
+        .subcommands(vec![build, view, erode, form, survey])
         .get_matches();
 
     match mesa.subcommand_name() {
@@ -31,6 +35,7 @@ fn main() {
         Some("view") => subcommand::view::mesa_view(),
         Some("erode") => subcommand::erode::mesa_erode(),
         Some("form") => subcommand::form::mesa_form(),
+        Some("survey") => subcommand::survey::mesa_survey(),
         _ => println!("{}", mesa.usage()),
     }
 }
