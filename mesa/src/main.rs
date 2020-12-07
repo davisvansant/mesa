@@ -1,5 +1,6 @@
 use clap::{crate_name, crate_version, App, SubCommand};
 
+mod plan;
 mod subcommand;
 
 fn main() {
