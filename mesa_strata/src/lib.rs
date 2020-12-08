@@ -1,3 +1,5 @@
+pub mod docker_local;
+
 #[cfg(test)]
 mod tests {
     #[test]
