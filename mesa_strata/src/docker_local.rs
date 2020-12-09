@@ -1,3 +1,4 @@
+use bollard::Docker;
 use std::io::Error;
 use std::process::{Command, Output};
 
@@ -10,18 +11,13 @@ impl DockerLocal {
             .output()?;
         Ok(cmd)
     }
-}
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn build() {
-        let cmd = DockerLocal::build();
-        match cmd {
-            Ok(output) => assert_eq!(output.status.success(), true),
-            Err(error) => assert_eq!(error.kind(), std::io::ErrorKind::NotFound),
-        }
+    pub async fn survey() {
+        let docker = Docker::connect_with_local_defaults().unwrap();
+        let info = docker.version().await;
+        match info {
+            Ok(result) => println!("{:#?}", result),
+            Err(error) => println!("{:?}", error),
+        };
     }
 }
