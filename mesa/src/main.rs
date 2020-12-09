@@ -3,7 +3,8 @@ use clap::{crate_name, crate_version, App, SubCommand};
 mod plan;
 mod subcommand;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let build = SubCommand::with_name("build")
         .about("build and create your mesa")
         .help("build and create your mesa");
@@ -31,11 +32,11 @@ fn main() {
         .get_matches();
 
     match mesa.subcommand_name() {
-        Some("build") => subcommand::build::mesa_build(),
-        Some("view") => subcommand::view::mesa_view(),
-        Some("erode") => subcommand::erode::mesa_erode(),
-        Some("form") => subcommand::form::mesa_form(),
-        Some("survey") => subcommand::survey::mesa_survey(),
+        Some("build") => subcommand::build::mesa_build().await,
+        Some("view") => subcommand::view::mesa_view().await,
+        Some("erode") => subcommand::erode::mesa_erode().await,
+        Some("form") => subcommand::form::mesa_form().await,
+        Some("survey") => subcommand::survey::mesa_survey().await,
         _ => println!("{}", mesa.usage()),
     }
 }
