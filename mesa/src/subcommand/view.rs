@@ -1,3 +1,3 @@
-pub fn mesa_view() {
+pub async fn mesa_view() {
     println!("view!");
 }

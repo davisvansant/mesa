@@ -1,3 +1,3 @@
-pub fn mesa_survey() {
-    println!("survey!");
+pub async fn mesa_survey() {
+    mesa_strata::docker_local::DockerLocal::survey().await;
 }

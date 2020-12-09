@@ -1,3 +1,3 @@
-pub fn mesa_erode() {
+pub async fn mesa_erode() {
     println!("erode!")
 }
