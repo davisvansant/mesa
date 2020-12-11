@@ -5,10 +5,11 @@ use std::process::{Command, Output};
 pub struct DockerLocal {}
 
 impl DockerLocal {
-    pub fn build() -> Result<Output, Error> {
+    pub fn build(config: String) -> Result<Output, Error> {
         let cmd = Command::new("/usr/local/bin/docker")
             .arg("version")
             .output()?;
+        println!("{:?}", config);
         Ok(cmd)
     }
 
