@@ -1,9 +1,22 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use std::fs::write;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct MesaPlan {
     pub name: String,
     pub version: String,
+}
+
+impl MesaPlan {
+    pub async fn init() {
+        let plan: MesaPlan = MesaPlan {
+            name: String::from("default_mesa_plan_name"),
+            version: String::from("default_mesa_plan_version"),
+        };
+        let toml = toml::to_string(&plan).unwrap();
+        write("./target/test.toml", toml).unwrap();
+        println!("toml created");
+    }
 }
 
 #[cfg(test)]
