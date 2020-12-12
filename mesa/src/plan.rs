@@ -26,8 +26,8 @@ impl MesaPlan {
 
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct Language {
-    name: SupportedLanguage,
-    version: String,
+    pub name: SupportedLanguage,
+    pub version: String,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
