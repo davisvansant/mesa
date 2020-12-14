@@ -8,3 +8,6 @@ edition = "2018"
 
 [dependencies.bollard]
 version = "0.9.0"
+
+[dependencies.futures]
+version = "0.3.8"
