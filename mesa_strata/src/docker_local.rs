@@ -1,7 +1,7 @@
 use bollard::container::{
     Config, CreateContainerOptions, RemoveContainerOptions, StartContainerOptions,
 };
-use bollard::image::CreateImageOptions;
+use bollard::image::{CreateImageOptions, RemoveImageOptions};
 use bollard::Docker;
 use futures::TryStreamExt;
 
@@ -70,6 +70,17 @@ impl DockerLocal {
 
     pub async fn erode(container: String) {
         let docker = Docker::connect_with_local_defaults().unwrap();
+        let remove_image_options = Some(RemoveImageOptions {
+            force: true,
+            ..Default::default()
+        });
+        let remove_image = docker
+            .remove_image("rust:1.47.0", remove_image_options, None)
+            .await;
+        match remove_image {
+            Ok(result) => println!("Removed Image {:#?}", result),
+            Err(error) => println!("{}", error),
+        };
         let options = Some(RemoveContainerOptions {
             v: true,
             force: true,
