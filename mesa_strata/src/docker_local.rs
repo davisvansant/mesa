@@ -1,7 +1,10 @@
 use bollard::container::{
     Config, CreateContainerOptions, RemoveContainerOptions, StartContainerOptions,
 };
+use bollard::image::CreateImageOptions;
 use bollard::Docker;
+use futures::TryStreamExt;
+
 // use std::io::Error;
 // use std::process::{Command, Output};
 
@@ -17,11 +20,25 @@ impl DockerLocal {
     // }
     pub async fn build(config: String) {
         let docker = Docker::connect_with_local_defaults().unwrap();
+        let create_image_options = Some(CreateImageOptions {
+            from_image: "rust:1.47.0",
+            ..Default::default()
+        });
+        let create_image = docker
+            .create_image(create_image_options, None, None)
+            .map_err(|error| error)
+            .map_ok(|ok| ok)
+            .try_collect::<Vec<_>>()
+            .await;
+        match create_image {
+            Ok(result) => println!("{}", result.last().unwrap().status.as_ref().unwrap()),
+            Err(error) => println!("{:#?}", error),
+        };
         let container_options = Some(CreateContainerOptions {
             name: String::from("mesa_rust_1.48.0"),
         });
         let container_config = Config {
-            image: Some("rust:1.48.0"),
+            image: Some("rust:1.47.0"),
             ..Default::default()
         };
 
