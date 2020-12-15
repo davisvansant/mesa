@@ -2,8 +2,10 @@ use bollard::container::{
     Config, CreateContainerOptions, RemoveContainerOptions, StartContainerOptions,
 };
 use bollard::image::{CreateImageOptions, RemoveImageOptions};
+use bollard::models::{HostConfig, PortBinding};
 use bollard::Docker;
 use futures::TryStreamExt;
+use std::collections::HashMap;
 
 // use std::io::Error;
 // use std::process::{Command, Output};
@@ -91,5 +93,51 @@ impl DockerLocal {
             Ok(_) => println!("Container {:#?} removed", &container),
             Err(error) => println!("{:#}", error),
         }
+    }
+
+    pub async fn view(config: String) {
+        let docker = Docker::connect_with_local_defaults().unwrap();
+        let mut container_ports = HashMap::new();
+        let host_ports = HashMap::new();
+        container_ports.insert(String::from("8080/tcp"), host_ports);
+        let mut port_bindings = HashMap::new();
+        port_bindings.insert(
+            String::from("8080/tcp"),
+            Some(vec![PortBinding {
+                host_ip: Some(String::from("0.0.0.0")),
+                host_port: Some(String::from("9000")),
+            }]),
+        );
+        let container_host_config = HostConfig {
+            port_bindings: Some(port_bindings),
+            ..Default::default()
+        };
+        let container_name = "mesa_built_container";
+        let create_container_options = Some(CreateContainerOptions {
+            name: container_name,
+        });
+        let create_container_config = Config {
+            image: Some(config),
+            exposed_ports: Some(container_ports),
+            cmd: Some(vec![String::from("sleep 10000")]),
+            host_config: Some(container_host_config),
+            ..Default::default()
+        };
+
+        let create_container = docker
+            .create_container(create_container_options, create_container_config)
+            .await;
+        match create_container {
+            Ok(result) => println!("{:#?}", result),
+            Err(error) => println!("error from create_container {:#?}", error),
+        };
+
+        let start_container = docker
+            .start_container(container_name, None::<StartContainerOptions<String>>)
+            .await;
+        match start_container {
+            Ok(result) => println!("{:#?}", result),
+            Err(error) => println!("{:?}", error),
+        };
     }
 }
