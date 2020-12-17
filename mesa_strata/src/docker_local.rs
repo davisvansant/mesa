@@ -65,6 +65,19 @@ impl DockerLocal {
         //     Ok(result) => println!("{:#?}", result),
         //     Err(error) => println!("{:?}", error),
         // };
+        // std::env::remove_var("TMPDIR");
+
+        let mut temp_dir = std::env::temp_dir();
+        temp_dir.push("mesa");
+        if temp_dir.exists() {
+            println!("dir already exists, not creating");
+        } else {
+            let create_mesa_dir = std::fs::create_dir(&temp_dir);
+            match create_mesa_dir {
+                Ok(result) => println!("directory created {:?}", result),
+                Err(error) => println!("error creating directory {:?}", error),
+            };
+        };
 
         let mut handlebars = Handlebars::new();
 
@@ -81,19 +94,25 @@ impl DockerLocal {
             "formation": "amazon/aws-lambda-provided:al2",
         });
 
-        let mut dockerfile = File::create("Dockerfile.mesa").unwrap();
+        let dockerfile = String::from("Dockerfile.mesa");
+        let dockerfile_path = &temp_dir.join(&dockerfile);
+
+        let mut create_dockerfile = File::create(&dockerfile_path).unwrap();
         handlebars
-            .render_to_write("Dockerfile", &handlebars_data, &mut dockerfile)
+            .render_to_write("Dockerfile", &handlebars_data, &mut create_dockerfile)
             .unwrap();
 
-        let tar_gz = File::create("mesa_dockerfile.tar.gz").unwrap();
+        let mut open_dockerfile = File::open(&dockerfile_path).unwrap();
+
+        let tar_gz = &temp_dir.join("Dockerfile.tar.gz");
+        let create_tar_gz = File::create(&tar_gz).unwrap();
         // let encoding = GzEncoder::new(tar_gz, Compression::default());
         // let mut tar = tar::Builder::new(encoding);
-        let mut tar = tar::Builder::new(tar_gz);
-        tar.append_path("Dockerfile.mesa").unwrap();
+        let mut tar = tar::Builder::new(create_tar_gz);
+        tar.append_file(&dockerfile, &mut open_dockerfile).unwrap();
         tar.finish().unwrap();
 
-        let mut file = File::open("mesa_dockerfile.tar.gz").unwrap();
+        let mut file = File::open(&tar_gz).unwrap();
         let mut contents = Vec::new();
         file.read_to_end(&mut contents).unwrap();
 
@@ -112,9 +131,9 @@ impl DockerLocal {
         match build_image {
             Ok(result) => println!("{:?}", result),
             Err(error) => println!("{:?}", error),
-        }
-        std::fs::remove_file("Dockerfile.mesa").unwrap();
-        std::fs::remove_file("mesa_dockerfile.tar.gz").unwrap();
+        };
+        std::fs::remove_file(&dockerfile_path).unwrap();
+        std::fs::remove_file(&tar_gz).unwrap();
     }
 
     pub async fn survey() {
