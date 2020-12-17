@@ -9,5 +9,23 @@ edition = "2018"
 [dependencies.bollard]
 version = "0.9.0"
 
+# [dependencies.flate2]
+# version = "1.0.19"
+# default-features = false
+# features = [ "default" ]
+
 [dependencies.futures]
 version = "0.3.8"
+
+[dependencies.handlebars]
+version = "3.5.1"
+default-features = false
+features = [ "dir_source" ]
+
+[dependencies.serde_json]
+version = "1.0.60"
+default-features = false
+features = [ "std" ]
+
+[dependencies.tar]
+version = "0.4.30"
