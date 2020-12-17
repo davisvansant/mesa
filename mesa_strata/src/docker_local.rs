@@ -26,7 +26,7 @@ impl DockerLocal {
     //     println!("{:?}", config);
     //     Ok(cmd)
     // }
-    pub async fn build(config: String) {
+    pub async fn build(config: String, version: String) {
         let docker = Docker::connect_with_local_defaults().unwrap();
         // let create_image_options = Some(CreateImageOptions {
         //     from_image: "rust:1.47.0",
@@ -116,10 +116,15 @@ impl DockerLocal {
         let mut contents = Vec::new();
         file.read_to_end(&mut contents).unwrap();
 
+        let mut tag = config;
+        tag.push(':');
+        tag.push_str(&version);
+
         let build_options = BuildImageOptions {
             dockerfile: "Dockerfile.mesa",
-            t: "mesa_built_container:0.1.0",
+            t: &tag,
             rm: true,
+            q: true,
             ..Default::default()
         };
         let build_image = docker
