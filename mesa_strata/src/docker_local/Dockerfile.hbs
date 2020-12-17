@@ -1,0 +1,4 @@
+FROM {{builder}} AS builder
+RUN rustc --version
+
+FROM {{formation}}
