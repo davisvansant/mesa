@@ -12,7 +12,7 @@ impl MesaPlan {
     pub async fn init() {
         let plan: MesaPlan = MesaPlan {
             name: String::from("default_mesa_plan_name"),
-            version: String::from("default_mesa_plan_version"),
+            version: String::from("0.1.0"),
             language: Language {
                 name: SupportedLanguage::Rust,
                 version: String::from("1.48.0"),
