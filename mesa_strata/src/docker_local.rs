@@ -124,6 +124,7 @@ impl DockerLocal {
             dockerfile: "Dockerfile.mesa",
             t: &tag,
             rm: true,
+            forcerm: true,
             q: true,
             ..Default::default()
         };
@@ -150,15 +151,16 @@ impl DockerLocal {
         };
     }
 
-    pub async fn erode(container: String) {
+    pub async fn erode(container: String, version: String) {
         let docker = Docker::connect_with_local_defaults().unwrap();
+        let mut tag = container.clone();
+        tag.push(':');
+        tag.push_str(&version);
         let remove_image_options = Some(RemoveImageOptions {
             force: true,
             ..Default::default()
         });
-        let remove_image = docker
-            .remove_image("rust:1.47.0", remove_image_options, None)
-            .await;
+        let remove_image = docker.remove_image(&tag, remove_image_options, None).await;
         match remove_image {
             Ok(result) => println!("Removed Image {:#?}", result),
             Err(error) => println!("{}", error),
@@ -175,7 +177,7 @@ impl DockerLocal {
         }
     }
 
-    pub async fn view(config: String) {
+    pub async fn view(config: String, version: String) {
         let docker = Docker::connect_with_local_defaults().unwrap();
         let mut container_ports = HashMap::new();
         let host_ports = HashMap::new();
@@ -192,12 +194,15 @@ impl DockerLocal {
             port_bindings: Some(port_bindings),
             ..Default::default()
         };
-        let container_name = "mesa_built_container";
+        let container_name = config.clone();
+        let mut tag = config.clone();
+        tag.push(':');
+        tag.push_str(&version);
         let create_container_options = Some(CreateContainerOptions {
-            name: container_name,
+            name: &container_name,
         });
         let create_container_config = Config {
-            image: Some(config),
+            image: Some(tag),
             exposed_ports: Some(container_ports),
             cmd: Some(vec![String::from("sleep 10000")]),
             host_config: Some(container_host_config),
@@ -213,7 +218,7 @@ impl DockerLocal {
         };
 
         let start_container = docker
-            .start_container(container_name, None::<StartContainerOptions<String>>)
+            .start_container(&container_name, None::<StartContainerOptions<String>>)
             .await;
         match start_container {
             Ok(result) => println!("{:#?}", result),
