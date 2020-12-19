@@ -9,11 +9,6 @@ edition = "2018"
 [dependencies.bollard]
 version = "0.9.0"
 
-# [dependencies.flate2]
-# version = "1.0.19"
-# default-features = false
-# features = [ "default" ]
-
 [dependencies.futures]
 version = "0.3.8"
 
