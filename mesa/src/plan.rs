@@ -6,6 +6,7 @@ pub struct MesaPlan {
     pub name: String,
     pub version: String,
     pub language: Language,
+    pub formation: Formation,
 }
 
 impl MesaPlan {
@@ -16,6 +17,10 @@ impl MesaPlan {
             language: Language {
                 name: SupportedLanguage::Rust,
                 version: String::from("1.48.0"),
+            },
+            formation: Formation {
+                shape: FormationShape::Lambda,
+                layer: String::from("amazon/aws-lambda-provided:al2"),
             },
         };
         let toml = toml::to_string(&plan).unwrap();
@@ -35,6 +40,17 @@ pub enum SupportedLanguage {
     Rust,
 }
 
+#[derive(Deserialize, Serialize)]
+pub struct Formation {
+    shape: FormationShape,
+    layer: String,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Serialize)]
+pub enum FormationShape {
+    Lambda,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -49,6 +65,10 @@ mod tests {
             [language]
             name = "Rust"
             version = "1.48.0"
+
+            [formation]
+            shape = "Lambda"
+            layer = "amazon/aws-lambda-provided:al2"
             "#,
         )
         .unwrap();
