@@ -42,8 +42,8 @@ pub enum SupportedLanguage {
 
 #[derive(Deserialize, Serialize)]
 pub struct Formation {
-    shape: FormationShape,
-    layer: String,
+    pub shape: FormationShape,
+    pub layer: String,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
