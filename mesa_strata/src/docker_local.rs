@@ -14,7 +14,13 @@ use std::io::Read;
 pub struct DockerLocal {}
 
 impl DockerLocal {
-    pub async fn build(config: String, version: String) {
+    pub async fn build(
+        config: String,
+        version: String,
+        // builder_name: String,
+        builder_version: String,
+        formation: String,
+    ) {
         let docker = Docker::connect_with_local_defaults().unwrap();
 
         let mut temp_dir = std::env::temp_dir();
@@ -38,9 +44,19 @@ impl DockerLocal {
             )
             .unwrap();
 
+        // let handlebars_data = json! ({
+        //     "builder": "rust:1.47.0",
+        //     "formation": "amazon/aws-lambda-provided:al2",
+        // });
+
+        let mut builder = String::with_capacity(20);
+        builder.push_str("rust");
+        builder.push(':');
+        builder.push_str(&builder_version);
+
         let handlebars_data = json! ({
-            "builder": "rust:1.47.0",
-            "formation": "amazon/aws-lambda-provided:al2",
+            "builder": builder,
+            "formation": formation,
         });
 
         let dockerfile = String::from("Dockerfile.mesa");
