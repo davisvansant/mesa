@@ -1,4 +1,6 @@
 use serde::{Deserialize, Serialize};
+use std::error::Error;
+use std::fs::read;
 use std::fs::write;
 
 #[derive(Deserialize, Serialize)]
@@ -26,6 +28,12 @@ impl MesaPlan {
         let toml = toml::to_string(&plan).unwrap();
         write("./target/test.toml", toml).unwrap();
         println!("toml created");
+    }
+
+    pub async fn excavate() -> Result<MesaPlan, Box<dyn Error>> {
+        let file = read("./target/test.toml")?;
+        let plan: MesaPlan = toml::from_slice(&file)?;
+        Ok(plan)
     }
 }
 
