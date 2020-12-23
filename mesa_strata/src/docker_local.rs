@@ -24,8 +24,6 @@ impl DockerLocal {
         builder_version: String,
         formation: String,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        // let docker = Docker::connect_with_local_defaults().unwrap();
-        // let docker = Docker::connect_with_local_defaults()?;
         let docker = Self::connect().await?;
 
         let mut temp_dir = std::env::temp_dir();
@@ -42,21 +40,10 @@ impl DockerLocal {
 
         let mut handlebars = Handlebars::new();
 
-        // handlebars
-        //     .register_template_file(
-        //         "Dockerfile",
-        //         "./mesa_strata/src/docker_local/Dockerfile.hbs",
-        //     )
-        //     .unwrap();
         handlebars.register_template_file(
             "Dockerfile",
             "./mesa_strata/src/docker_local/Dockerfile.hbs",
         )?;
-
-        // let handlebars_data = json! ({
-        //     "builder": "rust:1.47.0",
-        //     "formation": "amazon/aws-lambda-provided:al2",
-        // });
 
         let mut builder = String::with_capacity(20);
         builder.push_str("rust");
@@ -70,30 +57,21 @@ impl DockerLocal {
 
         let dockerfile = String::from("Dockerfile.mesa");
         let dockerfile_path = &temp_dir.join(&dockerfile);
-
-        // let mut create_dockerfile = File::create(&dockerfile_path).unwrap();
         let mut create_dockerfile = File::create(&dockerfile_path)?;
-        // handlebars
-        //     .render_to_write("Dockerfile", &handlebars_data, &mut create_dockerfile)
-        //     .unwrap();
+
         handlebars.render_to_write("Dockerfile", &handlebars_data, &mut create_dockerfile)?;
 
-        // let mut open_dockerfile = File::open(&dockerfile_path).unwrap();
         let mut open_dockerfile = File::open(&dockerfile_path)?;
 
         let tar_gz = &temp_dir.join("Dockerfile.tar.gz");
-        // let create_tar_gz = File::create(&tar_gz).unwrap();
         let create_tar_gz = File::create(&tar_gz)?;
         let mut tar = tar::Builder::new(create_tar_gz);
-        // tar.append_file(&dockerfile, &mut open_dockerfile).unwrap();
         tar.append_file(&dockerfile, &mut open_dockerfile)?;
-        // tar.finish().unwrap();
         tar.finish()?;
 
-        // let mut file = File::open(&tar_gz).unwrap();
         let mut file = File::open(&tar_gz)?;
         let mut contents = Vec::new();
-        // file.read_to_end(&mut contents).unwrap();
+
         file.read_to_end(&mut contents)?;
 
         let mut tag = config;
@@ -108,12 +86,7 @@ impl DockerLocal {
             q: true,
             ..Default::default()
         };
-        // let build_image = docker
-        //     .build_image(build_options, None, Some(contents.into()))
-        //     .map_err(|error| println!("{}", error))
-        //     .map_ok(|ok| println!("{:?}", ok))
-        //     .try_collect::<Vec<_>>()
-        //     .await;
+
         let build_image = docker
             .build_image(build_options, None, Some(contents.into()))
             .map_err(|error| println!("{}", error))
@@ -124,19 +97,14 @@ impl DockerLocal {
             Ok(result) => println!("{:?}", result),
             Err(error) => println!("{:?}", error),
         };
-        // println!("{:?}", build_image);
-        // std::fs::remove_file(&dockerfile_path).unwrap();
-        // std::fs::remove_file(&tar_gz).unwrap();
+
         std::fs::remove_file(&dockerfile_path)?;
         std::fs::remove_file(&tar_gz)?;
         Ok(())
     }
 
     pub async fn survey() -> Result<(), Box<dyn std::error::Error>> {
-        // let docker = Docker::connect_with_local_defaults().unwrap();
-        // let docker = Docker::connect_with_local_defaults()?;
-        let docker = DockerLocal::connect().await?;
-        // let info = docker.version().await?;
+        let docker = Self::connect().await?;
         let info = docker.version().await?;
         // match info {
         //     Ok(result) => println!("{:#?}", result),
@@ -163,7 +131,7 @@ impl DockerLocal {
             Ok(result) => println!("Removed Image {:#?}", result),
             Err(error) => println!("{}", error),
         };
-        // println!("{:#?}", remove_image);
+
         let options = Some(RemoveContainerOptions {
             v: true,
             force: true,
