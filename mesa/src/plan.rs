@@ -12,7 +12,7 @@ pub struct MesaPlan {
 }
 
 impl MesaPlan {
-    pub async fn init() {
+    pub async fn init() -> Result<(), Box<dyn std::error::Error>> {
         let plan: MesaPlan = MesaPlan {
             name: String::from("default_mesa_plan_name"),
             version: String::from("0.1.0"),
@@ -25,9 +25,12 @@ impl MesaPlan {
                 layer: String::from("amazon/aws-lambda-provided:al2"),
             },
         };
-        let toml = toml::to_string(&plan).unwrap();
-        write("test.toml", toml).unwrap();
+        // let toml = toml::to_string(&plan).unwrap();
+        // write("test.toml", toml).unwrap();
+        let toml = toml::to_string(&plan)?;
+        write("test.toml", toml)?;
         println!("toml created");
+        Ok(())
     }
 
     pub async fn excavate() -> Result<MesaPlan, Box<dyn Error>> {
@@ -88,7 +91,7 @@ mod tests {
 
     #[tokio::test]
     async fn init() {
-        MesaPlan::init().await;
+        MesaPlan::init().await.unwrap();
         let open_test_mesa_plan = std::fs::File::open("test.toml").unwrap();
         let metadata = open_test_mesa_plan.metadata().unwrap();
         assert_eq!(metadata.is_file(), true);
@@ -96,7 +99,7 @@ mod tests {
 
     #[tokio::test]
     async fn excavate() {
-        MesaPlan::init().await;
+        MesaPlan::init().await.unwrap();
         let test_mesa_plan = MesaPlan::excavate().await.unwrap();
         assert_eq!(test_mesa_plan.name, String::from("default_mesa_plan_name"));
         assert_eq!(test_mesa_plan.version, String::from("0.1.0"));
