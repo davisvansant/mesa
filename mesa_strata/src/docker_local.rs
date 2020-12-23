@@ -17,6 +17,30 @@ impl DockerLocal {
     async fn connect() -> Result<Docker, bollard::errors::Error> {
         Docker::connect_with_local_defaults()
     }
+
+    async fn manage_temporary_directory(
+        temp_dir: &std::path::Path,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        Self::cleanup_temporary_directory(&temp_dir).await?;
+        std::fs::create_dir(&temp_dir)?;
+        Ok(())
+    }
+
+    async fn cleanup_temporary_directory(
+        temp_dir: &std::path::Path,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let dir = std::fs::read_dir(&temp_dir)?;
+        for file in dir {
+            let file = file?;
+            let path = file.path();
+            std::fs::remove_file(&path)?;
+            println!("Removed {:?}", &path);
+        }
+        std::fs::remove_dir(&temp_dir)?;
+        println!("removed {:?}", &temp_dir);
+        Ok(())
+    }
+
     pub async fn build(
         config: String,
         version: String,
@@ -28,15 +52,8 @@ impl DockerLocal {
 
         let mut temp_dir = std::env::temp_dir();
         temp_dir.push("mesa");
-        if temp_dir.exists() {
-            println!("dir already exists, not creating");
-        } else {
-            let create_mesa_dir = std::fs::create_dir(&temp_dir);
-            match create_mesa_dir {
-                Ok(result) => println!("directory created {:?}", result),
-                Err(error) => println!("error creating directory {:?}", error),
-            };
-        };
+
+        Self::manage_temporary_directory(&temp_dir).await?;
 
         let mut handlebars = Handlebars::new();
 
@@ -98,8 +115,6 @@ impl DockerLocal {
             Err(error) => println!("{:?}", error),
         };
 
-        std::fs::remove_file(&dockerfile_path)?;
-        std::fs::remove_file(&tar_gz)?;
         Ok(())
     }
 
