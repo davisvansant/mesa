@@ -4,7 +4,7 @@ mod plan;
 mod subcommand;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let build = SubCommand::with_name("build")
         .about("build and create your mesa")
         .help("build and create your mesa");
@@ -32,11 +32,12 @@ async fn main() {
         .get_matches();
 
     match mesa.subcommand_name() {
-        Some("build") => subcommand::build::mesa_build().await,
-        Some("view") => subcommand::view::mesa_view().await,
-        Some("erode") => subcommand::erode::mesa_erode().await,
-        Some("form") => subcommand::form::mesa_form().await,
-        Some("survey") => subcommand::survey::mesa_survey().await,
+        Some("build") => subcommand::build::mesa_build().await?,
+        Some("view") => subcommand::view::mesa_view().await?,
+        Some("erode") => subcommand::erode::mesa_erode().await?,
+        Some("form") => subcommand::form::mesa_form().await?,
+        Some("survey") => subcommand::survey::mesa_survey().await?,
         _ => println!("{}", mesa.usage()),
     }
+    Ok(())
 }
