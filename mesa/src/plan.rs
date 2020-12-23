@@ -25,11 +25,9 @@ impl MesaPlan {
                 layer: String::from("amazon/aws-lambda-provided:al2"),
             },
         };
-        // let toml = toml::to_string(&plan).unwrap();
-        // write("test.toml", toml).unwrap();
         let toml = toml::to_string(&plan)?;
         write("test.toml", toml)?;
-        println!("toml created");
+        println!("mesa | an initial site plan has been created");
         Ok(())
     }
 
