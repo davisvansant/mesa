@@ -96,6 +96,7 @@ mod tests {
 
     #[tokio::test]
     async fn excavate() {
+        MesaPlan::init().await;
         let test_mesa_plan = MesaPlan::excavate().await.unwrap();
         assert_eq!(test_mesa_plan.name, String::from("default_mesa_plan_name"));
         assert_eq!(test_mesa_plan.version, String::from("0.1.0"));
