@@ -1,11 +1,23 @@
 pub async fn mesa_build() -> Result<(), Box<dyn std::error::Error>> {
-    let plan = crate::plan::MesaPlan::excavate().await?;
-    mesa_strata::docker_local::DockerLocal::build(
-        plan.name,
-        plan.version,
-        plan.language.version,
-        plan.formation.layer,
-    )
-    .await?;
+    let plan = crate::plan::MesaPlan::excavate().await;
+    match plan {
+        Ok(plan_details) => {
+            mesa_strata::docker_local::DockerLocal::build(
+                plan_details.name,
+                plan_details.version,
+                plan_details.language.version,
+                plan_details.formation.layer,
+            )
+            .await?
+        }
+        Err(error) => println!("mesa build | unable to read plan : {}", error),
+    }
+    // mesa_strata::docker_local::DockerLocal::build(
+    //     plan.name,
+    //     plan.version,
+    //     plan.language.version,
+    //     plan.formation.layer,
+    // )
+    // .await?;
     Ok(())
 }
