@@ -34,10 +34,10 @@ impl DockerLocal {
             let file = file?;
             let path = file.path();
             std::fs::remove_file(&path)?;
-            println!("Removed {:?}", &path);
+            println!("mesa cleanup | removed {:?}", &path);
         }
         std::fs::remove_dir(&temp_dir)?;
-        println!("removed {:?}", &temp_dir);
+        println!("mesa cleanup | removed {:?}", &temp_dir);
         Ok(())
     }
 
@@ -143,7 +143,7 @@ impl DockerLocal {
         });
         let remove_image = docker.remove_image(&tag, remove_image_options, None).await;
         match remove_image {
-            Ok(result) => println!("Removed Image {:#?}", result),
+            Ok(result) => println!("mesa erode | removed image : {:#?}", result),
             Err(error) => println!("{}", error),
         };
 
