@@ -199,17 +199,30 @@ impl DockerLocal {
             .create_container(create_container_options, create_container_config)
             .await;
         match create_container {
-            Ok(result) => println!("{:#?}", result),
-            Err(error) => println!("error from create_container {:#?}", error),
+            Ok(result) => {
+                let result_details = serde_json::to_string_pretty(&result)?;
+                println!("mesa view | {}", result_details);
+
+                let start_container = docker
+                    .start_container(&container_name, None::<StartContainerOptions<String>>)
+                    .await;
+                match start_container {
+                    Ok(_) => {
+                        println!("mesa view | started {}", &container_name);
+                    }
+                    Err(error) => println!("mesa view | {}", error),
+                };
+            }
+            Err(error) => println!("mesa view | {}", error),
         };
 
-        let start_container = docker
-            .start_container(&container_name, None::<StartContainerOptions<String>>)
-            .await;
-        match start_container {
-            Ok(result) => println!("{:#?}", result),
-            Err(error) => println!("{:?}", error),
-        };
+        // let start_container = docker
+        //     .start_container(&container_name, None::<StartContainerOptions<String>>)
+        //     .await;
+        // match start_container {
+        //     Ok(result) => println!("{:#?}", result),
+        //     Err(error) => println!("mesa view | {}", error),
+        // };
         Ok(())
     }
 }
