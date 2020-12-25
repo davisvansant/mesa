@@ -142,8 +142,11 @@ impl DockerLocal {
         });
         let remove_image = docker.remove_image(&tag, remove_image_options, None).await;
         match remove_image {
-            Ok(result) => println!("mesa erode | removed image : {:#?}", result),
-            Err(error) => println!("{}", error),
+            Ok(result) => {
+                let result_details = serde_json::to_string_pretty(&result)?;
+                println!("mesa erode | {}", result_details);
+            }
+            Err(error) => println!("mesa erode | {}", &error),
         };
 
         let options = Some(RemoveContainerOptions {
@@ -151,12 +154,12 @@ impl DockerLocal {
             force: true,
             link: false,
         });
-        let erode = docker.remove_container(&container, options).await?;
-        // match erode {
-        //     Ok(_) => println!("Container {:#?} removed", &container),
-        //     Err(error) => println!("{:#}", error),
-        // }
-        println!("{:#?}", erode);
+        let erode = docker.remove_container(&container, options).await;
+        match erode {
+            Ok(_) => println!("mesa erode | container {:#?} removed", &container),
+            Err(error) => println!("mesa erode | {}", error),
+        }
+
         Ok(())
     }
 
