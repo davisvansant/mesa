@@ -121,11 +121,10 @@ impl DockerLocal {
     pub async fn survey() -> Result<(), Box<dyn std::error::Error>> {
         let docker = Self::connect().await?;
         let info = docker.version().await?;
-        // match info {
-        //     Ok(result) => println!("{:#?}", result),
-        //     Err(error) => println!("{:?}", error),
-        // };
-        println!("{:#?}", info);
+
+        println!("mesa survey | system information");
+        let information = serde_json::to_string_pretty(&info)?;
+        println!("{}", information);
         Ok(())
     }
 
