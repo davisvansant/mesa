@@ -34,10 +34,10 @@ impl DockerLocal {
             let file = file?;
             let path = file.path();
             std::fs::remove_file(&path)?;
-            println!("mesa cleanup | removed {:?}", &path);
+            println!("mesa build | removed {:?}", &path);
         }
         std::fs::remove_dir(&temp_dir)?;
-        println!("mesa cleanup | removed {:?}", &temp_dir);
+        println!("mesa build | removed {:?}", &temp_dir);
         Ok(())
     }
 
@@ -107,12 +107,16 @@ impl DockerLocal {
         let build_image = docker
             .build_image(build_options, None, Some(contents.into()))
             .map_err(|error| println!("{}", error))
-            .map_ok(|ok| println!("{:?}", ok))
+            .map_ok(|ok| {
+                let ok_results = serde_json::to_string(&ok);
+                println!("mesa build | {}", ok_results.unwrap());
+            })
             .try_collect::<Vec<_>>()
             .await;
+
         match build_image {
-            Ok(result) => println!("{:?}", result),
-            Err(error) => println!("{:?}", error),
+            Ok(_) => println!("mesa build | success!"),
+            Err(error) => println!("mesa build | {:?}", error),
         };
 
         Ok(())
