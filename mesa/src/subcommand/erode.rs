@@ -7,6 +7,6 @@ pub async fn mesa_erode() -> Result<(), Box<dyn std::error::Error>> {
         }
         Err(error) => println!("mesa erode | unable to read plan : {}", error),
     }
-    // mesa_strata::docker_local::DockerLocal::erode(plan.name, plan.version).await?;
+
     Ok(())
 }

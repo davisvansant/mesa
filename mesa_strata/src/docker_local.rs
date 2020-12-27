@@ -220,13 +220,6 @@ impl DockerLocal {
             Err(error) => println!("mesa view | {}", error),
         };
 
-        // let start_container = docker
-        //     .start_container(&container_name, None::<StartContainerOptions<String>>)
-        //     .await;
-        // match start_container {
-        //     Ok(result) => println!("{:#?}", result),
-        //     Err(error) => println!("mesa view | {}", error),
-        // };
         Ok(())
     }
 }

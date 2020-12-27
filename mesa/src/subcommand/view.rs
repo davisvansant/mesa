@@ -7,6 +7,6 @@ pub async fn mesa_view() -> Result<(), Box<dyn std::error::Error>> {
         }
         Err(error) => println!("mesa view | unable to read plan : {}", error),
     }
-    // mesa_strata::docker_local::DockerLocal::view(plan.name, plan.version).await?;
+
     Ok(())
 }

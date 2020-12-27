@@ -12,12 +12,6 @@ pub async fn mesa_build() -> Result<(), Box<dyn std::error::Error>> {
         }
         Err(error) => println!("mesa build | unable to read plan : {}", error),
     }
-    // mesa_strata::docker_local::DockerLocal::build(
-    //     plan.name,
-    //     plan.version,
-    //     plan.language.version,
-    //     plan.formation.layer,
-    // )
-    // .await?;
+
     Ok(())
 }
