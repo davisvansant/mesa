@@ -10,6 +10,7 @@ use serde_json::json;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
+use std::path::PathBuf;
 
 pub struct DockerLocal {}
 
@@ -39,6 +40,27 @@ impl DockerLocal {
         std::fs::remove_dir(&temp_dir)?;
         println!("mesa build | removed {:?}", &temp_dir);
         Ok(())
+    }
+
+    async fn create_and_build_tar(
+        tar_gz: &PathBuf,
+        path: String,
+        file: &mut File,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let create_tar_gz = File::create(&tar_gz)?;
+        let mut tar = tar::Builder::new(&create_tar_gz);
+        tar.append_file(path, file)?;
+        tar.finish()?;
+        println!("mesa build | tar has been created");
+        Ok(())
+    }
+
+    async fn read_tar_contents(tar_gz: &PathBuf) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+        let mut file = File::open(&tar_gz)?;
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents)?;
+        println!("mesa build | tar is ready");
+        Ok(contents)
     }
 
     pub async fn build(
@@ -81,15 +103,17 @@ impl DockerLocal {
         let mut open_dockerfile = File::open(&dockerfile_path)?;
 
         let tar_gz = &temp_dir.join("Dockerfile.tar.gz");
-        let create_tar_gz = File::create(&tar_gz)?;
-        let mut tar = tar::Builder::new(create_tar_gz);
-        tar.append_file(&dockerfile, &mut open_dockerfile)?;
-        tar.finish()?;
+        // let create_tar_gz = File::create(&tar_gz)?;
+        // let mut tar = tar::Builder::new(create_tar_gz);
+        // tar.append_file(&dockerfile, &mut open_dockerfile)?;
+        // tar.finish()?;
+        Self::create_and_build_tar(tar_gz, dockerfile, &mut open_dockerfile).await?;
 
-        let mut file = File::open(&tar_gz)?;
-        let mut contents = Vec::new();
-
-        file.read_to_end(&mut contents)?;
+        // let mut file = File::open(&tar_gz)?;
+        // let mut contents = Vec::new();
+        //
+        // file.read_to_end(&mut contents)?;
+        let contents = Self::read_tar_contents(&tar_gz).await?;
 
         let mut tag = config;
         tag.push(':');
@@ -116,7 +140,7 @@ impl DockerLocal {
 
         match build_image {
             Ok(_) => println!("mesa build | success!"),
-            Err(error) => println!("mesa build | {:?}", error),
+            Err(_) => println!("mesa build | the build was unsuccessful"),
         };
 
         Ok(())
