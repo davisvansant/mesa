@@ -64,12 +64,7 @@ impl DockerLocal {
     }
 
     async fn create_and_build_dockerfile(
-        // temp_dir: &std::path::Path,
-        // path: String,
-        // file: &mut File,
-        // dockerfile: String,
         dockerfile_path: &PathBuf,
-        // version: &str,
         builder_version: &str,
         formation: &str,
     ) -> Result<(), Box<dyn std::error::Error>> {
@@ -90,10 +85,6 @@ impl DockerLocal {
             "formation": formation,
         });
 
-        // let dockerfile = String::from("Dockerfile.mesa");
-        // let dockerfile_path = &temp_dir.join(&dockerfile);
-        // let mut create_dockerfile = File::create(&dockerfile_path)?;
-        // let path = temp_dir.join(dockerfile);
         let mut dockerfile = File::create(dockerfile_path)?;
 
         handlebars.render_to_write("Dockerfile", &handlebars_data, &mut dockerfile)?;
@@ -115,50 +106,17 @@ impl DockerLocal {
 
         Self::manage_temporary_directory(&temp_dir).await?;
 
-        // let mut handlebars = Handlebars::new();
-        //
-        // handlebars.register_template_file(
-        //     "Dockerfile",
-        //     "./mesa_strata/src/docker_local/Dockerfile.hbs",
-        // )?;
-        //
-        // let mut builder = String::with_capacity(20);
-        // builder.push_str("rust");
-        // builder.push(':');
-        // builder.push_str(&builder_version);
-        //
-        // let handlebars_data = json! ({
-        //     "builder": builder,
-        //     "formation": formation,
-        // });
-        //
         let dockerfile = String::from("Dockerfile.mesa");
         let dockerfile_path = &temp_dir.join(&dockerfile);
-        // let mut create_dockerfile = File::create(&dockerfile_path)?;
-        //
-        // handlebars.render_to_write("Dockerfile", &handlebars_data, &mut create_dockerfile)?;
-        Self::create_and_build_dockerfile(
-            // &temp_dir,
-            &dockerfile_path,
-            // &version,
-            &builder_version,
-            &formation,
-        )
-        .await?;
+
+        Self::create_and_build_dockerfile(&dockerfile_path, &builder_version, &formation).await?;
 
         let mut open_dockerfile = File::open(&dockerfile_path)?;
 
         let tar_gz = &temp_dir.join("Dockerfile.tar.gz");
-        // let create_tar_gz = File::create(&tar_gz)?;
-        // let mut tar = tar::Builder::new(create_tar_gz);
-        // tar.append_file(&dockerfile, &mut open_dockerfile)?;
-        // tar.finish()?;
+
         Self::create_and_build_tar(tar_gz, dockerfile, &mut open_dockerfile).await?;
 
-        // let mut file = File::open(&tar_gz)?;
-        // let mut contents = Vec::new();
-        //
-        // file.read_to_end(&mut contents)?;
         let contents = Self::read_tar_contents(&tar_gz).await?;
 
         let mut tag = config;
