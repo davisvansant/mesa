@@ -63,20 +63,16 @@ impl DockerLocal {
         Ok(contents)
     }
 
-    pub async fn build(
-        config: String,
-        version: String,
-        // builder_name: String,
-        builder_version: String,
-        formation: String,
+    async fn create_and_build_dockerfile(
+        // temp_dir: &std::path::Path,
+        // path: String,
+        // file: &mut File,
+        // dockerfile: String,
+        dockerfile_path: &PathBuf,
+        // version: &str,
+        builder_version: &str,
+        formation: &str,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let docker = Self::connect().await?;
-
-        let mut temp_dir = std::env::temp_dir();
-        temp_dir.push("mesa");
-
-        Self::manage_temporary_directory(&temp_dir).await?;
-
         let mut handlebars = Handlebars::new();
 
         handlebars.register_template_file(
@@ -94,11 +90,61 @@ impl DockerLocal {
             "formation": formation,
         });
 
+        // let dockerfile = String::from("Dockerfile.mesa");
+        // let dockerfile_path = &temp_dir.join(&dockerfile);
+        // let mut create_dockerfile = File::create(&dockerfile_path)?;
+        // let path = temp_dir.join(dockerfile);
+        let mut dockerfile = File::create(dockerfile_path)?;
+
+        handlebars.render_to_write("Dockerfile", &handlebars_data, &mut dockerfile)?;
+        println!("mesa build | dockerfile has been created");
+        Ok(())
+    }
+
+    pub async fn build(
+        config: String,
+        version: String,
+        // builder_name: String,
+        builder_version: String,
+        formation: String,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let docker = Self::connect().await?;
+
+        let mut temp_dir = std::env::temp_dir();
+        temp_dir.push("mesa");
+
+        Self::manage_temporary_directory(&temp_dir).await?;
+
+        // let mut handlebars = Handlebars::new();
+        //
+        // handlebars.register_template_file(
+        //     "Dockerfile",
+        //     "./mesa_strata/src/docker_local/Dockerfile.hbs",
+        // )?;
+        //
+        // let mut builder = String::with_capacity(20);
+        // builder.push_str("rust");
+        // builder.push(':');
+        // builder.push_str(&builder_version);
+        //
+        // let handlebars_data = json! ({
+        //     "builder": builder,
+        //     "formation": formation,
+        // });
+        //
         let dockerfile = String::from("Dockerfile.mesa");
         let dockerfile_path = &temp_dir.join(&dockerfile);
-        let mut create_dockerfile = File::create(&dockerfile_path)?;
-
-        handlebars.render_to_write("Dockerfile", &handlebars_data, &mut create_dockerfile)?;
+        // let mut create_dockerfile = File::create(&dockerfile_path)?;
+        //
+        // handlebars.render_to_write("Dockerfile", &handlebars_data, &mut create_dockerfile)?;
+        Self::create_and_build_dockerfile(
+            // &temp_dir,
+            &dockerfile_path,
+            // &version,
+            &builder_version,
+            &formation,
+        )
+        .await?;
 
         let mut open_dockerfile = File::open(&dockerfile_path)?;
 
