@@ -1,4 +1,10 @@
 FROM {{builder}} AS builder
-RUN rustc --version
+RUN {{ cmd_one }} \
+  && {{ cmd_two }} \
+  && {{ cmd_three }} \
+  && {{ cmd_four }} \
+  && {{ cmd_five }}
+
+RUN {{ test_one }}
 
 FROM {{formation}}
