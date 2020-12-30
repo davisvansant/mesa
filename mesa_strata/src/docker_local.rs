@@ -82,6 +82,12 @@ impl DockerLocal {
 
         let handlebars_data = json! ({
             "builder": builder,
+            "cmd_one": "rustc --version",
+            "cmd_two": "rustup component add rustfmt",
+            "cmd_three": "rustup component add clippy",
+            "cmd_four": "rustfmt --version",
+            "cmd_five": "cargo clippy --version",
+            "test_one": "cargo fmt --message-format human -- --check",
             "formation": formation,
         });
 
@@ -136,8 +142,8 @@ impl DockerLocal {
             .build_image(build_options, None, Some(contents.into()))
             .map_err(|error| println!("{}", error))
             .map_ok(|ok| {
-                let ok_results = serde_json::to_string(&ok);
-                println!("mesa build | {}", ok_results.unwrap());
+                let ok_results = serde_json::to_string(&ok.stream);
+                println!("mesa build | {}", ok_results.unwrap().trim());
             })
             .try_collect::<Vec<_>>()
             .await;
