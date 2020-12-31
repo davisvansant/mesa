@@ -87,7 +87,7 @@ impl DockerLocal {
             "cmd_three": "rustup component add clippy",
             "cmd_four": "rustfmt --version",
             "cmd_five": "cargo clippy --version",
-            "test_one": "cargo fmt --message-format human -- --check",
+            "test_one": "cargo fmt -- --check",
             "formation": formation,
         });
 
@@ -134,7 +134,7 @@ impl DockerLocal {
             t: &tag,
             rm: true,
             forcerm: true,
-            q: true,
+            q: false,
             ..Default::default()
         };
 
@@ -142,15 +142,61 @@ impl DockerLocal {
             .build_image(build_options, None, Some(contents.into()))
             .map_err(|error| println!("{}", error))
             .map_ok(|ok| {
-                let ok_results = serde_json::to_string(&ok.stream);
-                println!("mesa build | {}", ok_results.unwrap().trim());
+                match ok.id {
+                    None => (),
+                    Some(id) => {
+                        println!("mesa build | {}", id);
+                    }
+                }
+                match ok.stream {
+                    None => (),
+                    Some(stream) => {
+                        println!("{}", stream.trim());
+                    }
+                }
+                match ok.error {
+                    None => (),
+                    Some(error) => println!("mesa build | {}", error),
+                }
+                // match ok.error_detail {
+                //     None => (),
+                //     Some(error_detail) => {
+                //         println!("mesa build | {}", error_detail.code.unwrap());
+                //         println!("mesa build | {}", error_detail.message.unwrap());
+                //     }
+                // }
+                match ok.status {
+                    None => (),
+                    Some(status) => println!("mesa build | {}", status),
+                }
+                match ok.progress {
+                    None => (),
+                    Some(progress) => println!("mesa build | {}", progress),
+                }
+                // match ok.progress_detail {
+                //     None => (),
+                //     Some(progress_detail) => {
+                //         match progress_detail.current {
+                //             None => (),
+                //             Some(current) => println!("mesa build | {}", current),
+                //         }
+                //         match progress_detail.total {
+                //             None => (),
+                //             Some(total) => println!("mesa build | {}", total),
+                //         }
+                //     }
+                // }
+                match ok.aux {
+                    None => (),
+                    Some(aux) => println!("mesa build | {}", aux.id.unwrap()),
+                }
             })
             .try_collect::<Vec<_>>()
             .await;
 
         match build_image {
-            Ok(_) => println!("mesa build | success!"),
-            Err(_) => println!("mesa build | the build was unsuccessful"),
+            Ok(_) => println!("mesa build | Build has completed"),
+            Err(_) => println!("mesa build | Build was unsuccessful"),
         };
 
         Ok(())
