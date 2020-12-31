@@ -1,5 +1,6 @@
-pub async fn mesa_build() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn mesa_build(ignore_tests: bool) -> Result<(), Box<dyn std::error::Error>> {
     let plan = crate::plan::MesaPlan::excavate().await;
+    println!("mesa build | {:?}", ignore_tests);
     match plan {
         Ok(plan_details) => {
             mesa_strata::docker_local::DockerLocal::build(

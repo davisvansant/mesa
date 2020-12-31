@@ -1,4 +1,4 @@
-use clap::{crate_name, crate_version, App, SubCommand};
+use clap::{crate_name, crate_version, App, Arg, SubCommand};
 
 mod plan;
 mod subcommand;
@@ -7,7 +7,13 @@ mod subcommand;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let build = SubCommand::with_name("build")
         .about("build and create your mesa")
-        .help("build and create your mesa");
+        .help("build and create your mesa")
+        .arg(
+            Arg::with_name("ignore-tests")
+                .short("i")
+                .long("ignore-tests")
+                .help("ignore and skip tests"),
+        );
 
     let view = SubCommand::with_name("view")
         .about("view (test) your mesa")
@@ -31,13 +37,29 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .subcommands(vec![build, view, erode, form, survey])
         .get_matches();
 
-    match mesa.subcommand_name() {
-        Some("build") => subcommand::build::mesa_build().await?,
-        Some("view") => subcommand::view::mesa_view().await?,
-        Some("erode") => subcommand::erode::mesa_erode().await?,
-        Some("form") => subcommand::form::mesa_form().await?,
-        Some("survey") => subcommand::survey::mesa_survey().await?,
+    // match mesa.subcommand_name() {
+    //     Some("build") => subcommand::build::mesa_build().await?,
+    //     Some("view") => subcommand::view::mesa_view().await?,
+    //     Some("erode") => subcommand::erode::mesa_erode().await?,
+    //     Some("form") => subcommand::form::mesa_form().await?,
+    //     Some("survey") => subcommand::survey::mesa_survey().await?,
+    //     _ => println!("{}", mesa.usage()),
+    // }
+
+    match mesa.subcommand() {
+        ("build", Some(build_args)) => {
+            if build_args.is_present("ignore-tests") {
+                subcommand::build::mesa_build(true).await?;
+            } else {
+                subcommand::build::mesa_build(false).await?;
+            }
+        }
+        ("view", Some(_view_args)) => subcommand::view::mesa_view().await?,
+        ("erode", Some(_erode_args)) => subcommand::erode::mesa_erode().await?,
+        ("form", Some(_form_args)) => subcommand::form::mesa_form().await?,
+        ("survey", Some(_survey_args)) => subcommand::survey::mesa_survey().await?,
         _ => println!("{}", mesa.usage()),
     }
+
     Ok(())
 }
