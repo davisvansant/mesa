@@ -81,9 +81,6 @@ impl DockerLocal {
         builder.push(':');
         builder.push_str(&builder_version);
 
-        // for now, plan to pass in flag if set from cli
-        // let ignore_tests = true;
-
         let handlebars_data = match ignore_tests {
             false => json! ({
                 "ignore_tests": false,
@@ -104,17 +101,6 @@ impl DockerLocal {
                 "formation": formation,
             }),
         };
-
-        // let handlebars_data = json! ({
-        //     "builder": builder,
-        //     "cmd_one": "rustc --version",
-        //     "cmd_two": "rustup component add rustfmt",
-        //     "cmd_three": "rustup component add clippy",
-        //     "cmd_four": "rustfmt --version",
-        //     "cmd_five": "cargo clippy --version",
-        //     "test_one": "cargo fmt -- --check",
-        //     "formation": formation,
-        // });
 
         let mut dockerfile = File::create(dockerfile_path)?;
 
