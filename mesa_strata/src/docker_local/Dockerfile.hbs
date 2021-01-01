@@ -1,4 +1,7 @@
 FROM {{builder}} AS builder
+{{#if ignore_tests}}
+RUN {{ cmd_one }}
+{{else}}
 RUN {{ cmd_one }} \
   && {{ cmd_two }} \
   && {{ cmd_three }} \
@@ -6,5 +9,5 @@ RUN {{ cmd_one }} \
   && {{ cmd_five }}
 
 RUN {{ test_one }}
-
+{{/if}}
 FROM {{formation}}
