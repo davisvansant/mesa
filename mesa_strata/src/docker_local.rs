@@ -67,6 +67,7 @@ impl DockerLocal {
         dockerfile_path: &PathBuf,
         builder_version: &str,
         formation: &str,
+        ignore_tests: bool,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut handlebars = Handlebars::new();
 
@@ -81,7 +82,7 @@ impl DockerLocal {
         builder.push_str(&builder_version);
 
         // for now, plan to pass in flag if set from cli
-        let ignore_tests = true;
+        // let ignore_tests = true;
 
         let handlebars_data = match ignore_tests {
             false => json! ({
@@ -128,6 +129,7 @@ impl DockerLocal {
         // builder_name: String,
         builder_version: String,
         formation: String,
+        ignore_tests: bool,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let docker = Self::connect().await?;
 
@@ -139,7 +141,13 @@ impl DockerLocal {
         let dockerfile = String::from("Dockerfile.mesa");
         let dockerfile_path = &temp_dir.join(&dockerfile);
 
-        Self::create_and_build_dockerfile(&dockerfile_path, &builder_version, &formation).await?;
+        Self::create_and_build_dockerfile(
+            &dockerfile_path,
+            &builder_version,
+            &formation,
+            ignore_tests,
+        )
+        .await?;
 
         let mut open_dockerfile = File::open(&dockerfile_path)?;
 
