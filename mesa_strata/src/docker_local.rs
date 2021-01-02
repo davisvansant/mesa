@@ -176,13 +176,6 @@ impl DockerLocal {
                     None => (),
                     Some(error) => println!("mesa build | {}", error),
                 }
-                // match ok.error_detail {
-                //     None => (),
-                //     Some(error_detail) => {
-                //         println!("mesa build | {}", error_detail.code.unwrap());
-                //         println!("mesa build | {}", error_detail.message.unwrap());
-                //     }
-                // }
                 match ok.status {
                     None => (),
                     Some(status) => println!("mesa build | {}", status),
@@ -191,19 +184,6 @@ impl DockerLocal {
                     None => (),
                     Some(progress) => println!("mesa build | {}", progress),
                 }
-                // match ok.progress_detail {
-                //     None => (),
-                //     Some(progress_detail) => {
-                //         match progress_detail.current {
-                //             None => (),
-                //             Some(current) => println!("mesa build | {}", current),
-                //         }
-                //         match progress_detail.total {
-                //             None => (),
-                //             Some(total) => println!("mesa build | {}", total),
-                //         }
-                //     }
-                // }
                 match ok.aux {
                     None => (),
                     Some(aux) => println!("mesa build | {}", aux.id.unwrap()),

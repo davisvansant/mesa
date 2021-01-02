@@ -37,15 +37,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .subcommands(vec![build, view, erode, form, survey])
         .get_matches();
 
-    // match mesa.subcommand_name() {
-    //     Some("build") => subcommand::build::mesa_build().await?,
-    //     Some("view") => subcommand::view::mesa_view().await?,
-    //     Some("erode") => subcommand::erode::mesa_erode().await?,
-    //     Some("form") => subcommand::form::mesa_form().await?,
-    //     Some("survey") => subcommand::survey::mesa_survey().await?,
-    //     _ => println!("{}", mesa.usage()),
-    // }
-
     match mesa.subcommand() {
         ("build", Some(build_args)) => {
             if build_args.is_present("ignore-tests") {
