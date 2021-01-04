@@ -1,0 +1,10 @@
+name = "default_mesa_plan_name"
+version = "0.1.0"
+
+[language]
+name = "Rust"
+version = "1.48.0"
+
+[formation]
+shape = "Lambda"
+layer = "amazon/aws-lambda-provided:al2"
