@@ -22,8 +22,14 @@ impl DockerLocal {
     async fn manage_temporary_directory(
         temp_dir: &std::path::Path,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        Self::cleanup_temporary_directory(&temp_dir).await?;
-        std::fs::create_dir(&temp_dir)?;
+        if temp_dir.exists() {
+            Self::cleanup_temporary_directory(&temp_dir).await?;
+            std::fs::create_dir(&temp_dir)?;
+        } else {
+            std::fs::create_dir(&temp_dir)?;
+        }
+        // Self::cleanup_temporary_directory(&temp_dir).await?;
+        // std::fs::create_dir(&temp_dir)?;
         Ok(())
     }
 
@@ -49,7 +55,9 @@ impl DockerLocal {
     ) -> Result<(), Box<dyn std::error::Error>> {
         let create_tar_gz = File::create(&tar_gz)?;
         let mut tar = tar::Builder::new(&create_tar_gz);
+        let current_dir = std::env::current_dir()?;
         tar.append_file(path, file)?;
+        tar.append_dir_all(".", current_dir)?;
         tar.finish()?;
         println!("mesa build | tar has been created");
         Ok(())
@@ -73,7 +81,7 @@ impl DockerLocal {
 
         handlebars.register_template_file(
             "Dockerfile",
-            "./mesa_strata/src/docker_local/Dockerfile.hbs",
+            "../../mesa_strata/src/docker_local/Dockerfile.hbs",
         )?;
 
         let mut builder = String::with_capacity(20);
