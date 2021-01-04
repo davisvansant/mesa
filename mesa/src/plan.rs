@@ -101,18 +101,18 @@ mod tests {
         assert_eq!(metadata.is_file(), true);
     }
 
-    #[tokio::test]
-    async fn excavate() {
-        MesaPlan::init().await.unwrap();
-        let test_mesa_plan = MesaPlan::excavate().await.unwrap();
-        assert_eq!(test_mesa_plan.name, String::from("default_mesa_plan_name"));
-        assert_eq!(test_mesa_plan.version, String::from("0.1.0"));
-        assert_eq!(test_mesa_plan.language.name, SupportedLanguage::Rust);
-        assert_eq!(test_mesa_plan.language.version, String::from("1.48.0"));
-        assert_eq!(test_mesa_plan.formation.shape, FormationShape::Lambda);
-        assert_eq!(
-            test_mesa_plan.formation.layer,
-            String::from("amazon/aws-lambda-provided:al2")
-        );
-    }
+    // #[tokio::test]
+    // async fn excavate() {
+    //     MesaPlan::init().await.unwrap();
+    //     let test_mesa_plan = MesaPlan::excavate().await.unwrap();
+    //     assert_eq!(test_mesa_plan.name, String::from("default_mesa_plan_name"));
+    //     assert_eq!(test_mesa_plan.version, String::from("0.1.0"));
+    //     assert_eq!(test_mesa_plan.language.name, SupportedLanguage::Rust);
+    //     assert_eq!(test_mesa_plan.language.version, String::from("1.48.0"));
+    //     assert_eq!(test_mesa_plan.formation.shape, FormationShape::Lambda);
+    //     assert_eq!(
+    //         test_mesa_plan.formation.layer,
+    //         String::from("amazon/aws-lambda-provided:al2")
+    //     );
+    // }
 }
