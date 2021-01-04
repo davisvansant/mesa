@@ -11,3 +11,4 @@ Cargo.lock
 **/*.rs.bk
 
 test.toml
+!/examples/**/test.toml
