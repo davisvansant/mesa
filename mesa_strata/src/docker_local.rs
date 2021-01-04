@@ -6,6 +6,7 @@ use bollard::models::{HostConfig, PortBinding};
 use bollard::Docker;
 use futures::TryStreamExt;
 use handlebars::Handlebars;
+use handlebars::Template;
 use serde_json::json;
 use std::collections::HashMap;
 use std::fs::File;
@@ -79,10 +80,38 @@ impl DockerLocal {
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut handlebars = Handlebars::new();
 
-        handlebars.register_template_file(
-            "Dockerfile",
-            "../../mesa_strata/src/docker_local/Dockerfile.hbs",
-        )?;
+        // handlebars.register_template_file(
+        //     "Dockerfile",
+        //     "../../mesa_strata/src/docker_local/Dockerfile.hbs",
+        // )?;
+
+        let handlebars_dockerfile = r#"
+        FROM {{builder}} AS builder
+
+        COPY Cargo.toml .
+        COPY ./src ./src
+
+        {{#if ignore_tests}}
+        RUN {{ cmd_one }}
+        {{else}}
+        RUN {{ cmd_one }} \
+          && {{ cmd_two }} \
+          && {{ cmd_three }} \
+          && {{ cmd_four }} \
+          && {{ cmd_five }}
+
+        RUN {{ test_one }}
+        {{/if}}
+
+        RUN cargo build --release
+
+        FROM {{formation}}
+        COPY --from=builder /target/release/hello_world /var/task/
+        CMD ["./hello_world"]
+        "#;
+
+        let source = Template::compile(&handlebars_dockerfile)?;
+        handlebars.register_template("Dockerfile", source);
 
         let mut builder = String::with_capacity(20);
         builder.push_str("rust");
