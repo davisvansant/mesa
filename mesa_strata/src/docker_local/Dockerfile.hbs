@@ -10,4 +10,12 @@ RUN {{ cmd_one }} \
 
 RUN {{ test_one }}
 {{/if}}
+
+COPY Cargo.toml .
+COPY ./src ./src
+
+RUN cargo build --release
+
 FROM {{formation}}
+COPY --from=builder /target/release/hello_world /var/task/
+CMD ["./hello_world"]
