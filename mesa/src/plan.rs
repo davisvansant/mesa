@@ -26,8 +26,14 @@ impl MesaPlan {
             },
         };
         let toml = toml::to_string(&plan)?;
-        write("test.toml", toml)?;
-        println!("mesa | an initial site plan has been created");
+
+        if std::path::Path::new("test.toml").is_file() {
+            println!("mesa | there is currently a mesa plan here");
+        } else {
+            write("test.toml", toml)?;
+            println!("mesa | an initial site plan has been created");
+        }
+
         Ok(())
     }
 
