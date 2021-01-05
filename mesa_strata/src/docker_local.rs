@@ -86,29 +86,27 @@ impl DockerLocal {
         // )?;
 
         let handlebars_dockerfile = r#"
-        FROM {{builder}} AS builder
+FROM {{builder}} AS builder
 
-        COPY Cargo.toml .
-        COPY ./src ./src
+COPY Cargo.toml .
+COPY ./src ./src
+{{#if ignore_tests}}
+RUN {{ cmd_one }}
+{{else}}
+RUN {{ cmd_one }} \
+  && {{ cmd_two }} \
+  && {{ cmd_three }} \
+  && {{ cmd_four }} \
+  && {{ cmd_five }}
 
-        {{#if ignore_tests}}
-        RUN {{ cmd_one }}
-        {{else}}
-        RUN {{ cmd_one }} \
-          && {{ cmd_two }} \
-          && {{ cmd_three }} \
-          && {{ cmd_four }} \
-          && {{ cmd_five }}
+RUN {{ test_one }}
+{{/if}}
+RUN cargo build --release
 
-        RUN {{ test_one }}
-        {{/if}}
-
-        RUN cargo build --release
-
-        FROM {{formation}}
-        COPY --from=builder /target/release/hello_world /var/task/
-        CMD ["./hello_world"]
-        "#;
+FROM {{formation}}
+COPY --from=builder /target/release/hello_world /var/task/
+CMD ["./hello_world"]
+"#;
 
         let source = Template::compile(&handlebars_dockerfile)?;
         handlebars.register_template("Dockerfile", source);
