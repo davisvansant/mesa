@@ -104,7 +104,7 @@ RUN {{ test_one }}
 RUN cargo build --release
 
 FROM {{formation}}
-COPY --from=builder /target/release/hello_world /var/task/
+COPY --from=builder /target/release/hello_world /var/runtime/bootstrap
 CMD ["./hello_world"]
 "#;
 
@@ -307,7 +307,7 @@ CMD ["./hello_world"]
         let create_container_config = Config {
             image: Some(tag),
             exposed_ports: Some(container_ports),
-            cmd: Some(vec![String::from("sleep 10000")]),
+            // cmd: Some(vec![String::from("sleep 10000")]),
             host_config: Some(container_host_config),
             ..Default::default()
         };
