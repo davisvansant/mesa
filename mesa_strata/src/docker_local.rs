@@ -105,7 +105,7 @@ RUN cargo build --release
 
 FROM {{formation}}
 COPY --from=builder /target/release/hello_world /var/runtime/bootstrap
-CMD ["./hello_world"]
+CMD ["mesa_handler"]
 "#;
 
         let source = Template::compile(&handlebars_dockerfile)?;
