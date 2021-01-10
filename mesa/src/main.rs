@@ -1,5 +1,6 @@
 use clap::{crate_name, crate_version, App, Arg, SubCommand};
 
+mod formations;
 mod plan;
 mod subcommand;
 
