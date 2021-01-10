@@ -32,12 +32,11 @@
 // }
 
 use lambda_runtime::{error::HandlerError, lambda, Context};
-use std::error::Error;
 use serde_derive::{Deserialize, Serialize};
+use std::error::Error;
 
 #[derive(Deserialize)]
 struct LambdaEvent {
-    #[serde(rename = "firstName")]
     hi: String,
 }
 
@@ -52,7 +51,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     // std::env::set_var(runtime_api, "0.0.0.0:9001");
     // let runtime_api = "RUNTIME_ENDPOINT_VAR";
     // std::env::set_var(runtime_api, "0.0.0.0:9001");
-    simple_logger::init().unwrap();
+    // simple_logger::init().unwrap();
+    simple_logger::SimpleLogger::new().init().unwrap();
 
     let runtime_api = "AWS_LAMBDA_RUNTIME_API";
     std::env::set_var(runtime_api, "0.0.0.0:9001");
