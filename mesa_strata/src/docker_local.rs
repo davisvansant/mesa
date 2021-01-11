@@ -29,8 +29,7 @@ impl DockerLocal {
         } else {
             std::fs::create_dir(&temp_dir)?;
         }
-        // Self::cleanup_temporary_directory(&temp_dir).await?;
-        // std::fs::create_dir(&temp_dir)?;
+
         Ok(())
     }
 
@@ -79,11 +78,6 @@ impl DockerLocal {
         ignore_tests: bool,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut handlebars = Handlebars::new();
-
-        // handlebars.register_template_file(
-        //     "Dockerfile",
-        //     "../../mesa_strata/src/docker_local/Dockerfile.hbs",
-        // )?;
 
         let handlebars_dockerfile = r#"
 FROM {{builder}} AS builder
@@ -307,7 +301,6 @@ CMD ["mesa_handler"]
         let create_container_config = Config {
             image: Some(tag),
             exposed_ports: Some(container_ports),
-            // cmd: Some(vec![String::from("sleep 10000")]),
             host_config: Some(container_host_config),
             ..Default::default()
         };
