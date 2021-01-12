@@ -15,7 +15,7 @@ version = "0.1.0"
 path = "../mesa_strata"
 
 [dependencies.serde]
-version = "1.0.118"
+version = "1.0.119"
 default-features = false
 features = [ "derive" ]
 
@@ -25,4 +25,4 @@ default-features = false
 features = [ "full" ]
 
 [dependencies.toml]
-version = "0.5.7"
+version = "0.5.8"
