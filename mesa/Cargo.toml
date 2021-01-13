@@ -20,9 +20,9 @@ version = "0.3.9"
 version = "3.5.2"
 default-features = false
 
-[dependencies.mesa_strata]
-version = "0.1.0"
-path = "../mesa_strata"
+# [dependencies.mesa_strata]
+# version = "0.1.0"
+# path = "../mesa_strata"
 
 [dependencies.serde]
 version = "1.0.119"

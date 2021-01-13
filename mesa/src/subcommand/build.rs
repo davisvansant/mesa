@@ -4,7 +4,7 @@ pub async fn mesa_build(ignore_tests: bool) -> Result<(), Box<dyn std::error::Er
     if ignore_tests {
         match plan {
             Ok(plan_details) => {
-                mesa_strata::docker_local::DockerLocal::build(
+                mesa::strata::docker_local::DockerLocal::build(
                     plan_details.name,
                     plan_details.version,
                     plan_details.language.version,
@@ -18,7 +18,7 @@ pub async fn mesa_build(ignore_tests: bool) -> Result<(), Box<dyn std::error::Er
     } else {
         match plan {
             Ok(plan_details) => {
-                mesa_strata::docker_local::DockerLocal::build(
+                mesa::strata::docker_local::DockerLocal::build(
                     plan_details.name,
                     plan_details.version,
                     plan_details.language.version,

@@ -1,5 +1,5 @@
 [workspace]
 members = [
   "mesa",
-  "mesa_strata"
+  # "mesa_strata"
 ]
