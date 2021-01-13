@@ -1,3 +1,4 @@
+use crate::plan::MesaPlan;
 use bollard::container::{
     Config, CreateContainerOptions, RemoveContainerOptions, StartContainerOptions,
 };
@@ -139,11 +140,12 @@ CMD ["mesa_handler"]
     }
 
     pub async fn build(
-        config: String,
-        version: String,
-        // builder_name: String,
-        builder_version: String,
-        formation: String,
+        // config: String,
+        // version: String,
+        // // builder_name: String,
+        // builder_version: String,
+        // formation: String,
+        mesa_plan: MesaPlan,
         ignore_tests: bool,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let docker = Self::connect().await?;
@@ -158,8 +160,8 @@ CMD ["mesa_handler"]
 
         Self::create_and_build_dockerfile(
             &dockerfile_path,
-            &builder_version,
-            &formation,
+            &mesa_plan.version,
+            &mesa_plan.formation.layer,
             ignore_tests,
         )
         .await?;
@@ -172,9 +174,9 @@ CMD ["mesa_handler"]
 
         let contents = Self::read_tar_contents(&tar_gz).await?;
 
-        let mut tag = config;
+        let mut tag = mesa_plan.name;
         tag.push(':');
-        tag.push_str(&version);
+        tag.push_str(&mesa_plan.version);
 
         let build_options = BuildImageOptions {
             dockerfile: "Dockerfile.mesa",
