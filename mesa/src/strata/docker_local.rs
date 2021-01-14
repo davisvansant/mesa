@@ -160,7 +160,7 @@ CMD ["mesa_handler"]
 
         Self::create_and_build_dockerfile(
             &dockerfile_path,
-            &mesa_plan.version,
+            &mesa_plan.language.version,
             &mesa_plan.formation.layer,
             ignore_tests,
         )
@@ -242,13 +242,15 @@ CMD ["mesa_handler"]
     }
 
     pub async fn erode(
-        container: String,
-        version: String,
+        // container: String,
+        // version: String,
+        mesa_plan: MesaPlan,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let docker = Self::connect().await?;
-        let mut tag = container.clone();
+        // let mut tag = container.clone();
+        let mut tag = mesa_plan.name.clone();
         tag.push(':');
-        tag.push_str(&version);
+        tag.push_str(&mesa_plan.version);
         let remove_image_options = Some(RemoveImageOptions {
             force: true,
             ..Default::default()
@@ -267,9 +269,10 @@ CMD ["mesa_handler"]
             force: true,
             link: false,
         });
-        let erode = docker.remove_container(&container, options).await;
+        // let erode = docker.remove_container(&container, options).await;
+        let erode = docker.remove_container(&mesa_plan.name, options).await;
         match erode {
-            Ok(_) => println!("mesa erode | container {:#?} removed", &container),
+            Ok(_) => println!("mesa erode | container {:#?} removed", &mesa_plan.name),
             Err(error) => println!("mesa erode | {}", error),
         }
 
