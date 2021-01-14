@@ -140,11 +140,6 @@ CMD ["mesa_handler"]
     }
 
     pub async fn build(
-        // config: String,
-        // version: String,
-        // // builder_name: String,
-        // builder_version: String,
-        // formation: String,
         mesa_plan: MesaPlan,
         ignore_tests: bool,
     ) -> Result<(), Box<dyn std::error::Error>> {
@@ -241,13 +236,8 @@ CMD ["mesa_handler"]
         Ok(())
     }
 
-    pub async fn erode(
-        // container: String,
-        // version: String,
-        mesa_plan: MesaPlan,
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    pub async fn erode(mesa_plan: MesaPlan) -> Result<(), Box<dyn std::error::Error>> {
         let docker = Self::connect().await?;
-        // let mut tag = container.clone();
         let mut tag = mesa_plan.name.clone();
         tag.push(':');
         tag.push_str(&mesa_plan.version);
@@ -269,7 +259,6 @@ CMD ["mesa_handler"]
             force: true,
             link: false,
         });
-        // let erode = docker.remove_container(&container, options).await;
         let erode = docker.remove_container(&mesa_plan.name, options).await;
         match erode {
             Ok(_) => println!("mesa erode | container {:#?} removed", &mesa_plan.name),
@@ -279,7 +268,6 @@ CMD ["mesa_handler"]
         Ok(())
     }
 
-    // pub async fn view(config: String, version: String) -> Result<(), Box<dyn std::error::Error>>
     pub async fn view(mesa_plan: MesaPlan) -> Result<(), Box<dyn std::error::Error>> {
         let docker = Self::connect().await?;
         let mut container_ports = HashMap::new();
@@ -297,8 +285,6 @@ CMD ["mesa_handler"]
             port_bindings: Some(port_bindings),
             ..Default::default()
         };
-        // let container_name = config.clone();
-        // let mut tag = config.clone();
         let container_name = mesa_plan.name.clone();
         let mut tag = mesa_plan.name.clone();
         tag.push(':');
