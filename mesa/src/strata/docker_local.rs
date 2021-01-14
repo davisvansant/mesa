@@ -279,7 +279,8 @@ CMD ["mesa_handler"]
         Ok(())
     }
 
-    pub async fn view(config: String, version: String) -> Result<(), Box<dyn std::error::Error>> {
+    // pub async fn view(config: String, version: String) -> Result<(), Box<dyn std::error::Error>>
+    pub async fn view(mesa_plan: MesaPlan) -> Result<(), Box<dyn std::error::Error>> {
         let docker = Self::connect().await?;
         let mut container_ports = HashMap::new();
         let host_ports = HashMap::new();
@@ -296,10 +297,12 @@ CMD ["mesa_handler"]
             port_bindings: Some(port_bindings),
             ..Default::default()
         };
-        let container_name = config.clone();
-        let mut tag = config.clone();
+        // let container_name = config.clone();
+        // let mut tag = config.clone();
+        let container_name = mesa_plan.name.clone();
+        let mut tag = mesa_plan.name.clone();
         tag.push(':');
-        tag.push_str(&version);
+        tag.push_str(&mesa_plan.version);
         let create_container_options = Some(CreateContainerOptions {
             name: &container_name,
         });
