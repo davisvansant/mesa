@@ -17,11 +17,13 @@ impl MesaPlan {
             name: String::from("default_mesa_plan_name"),
             version: String::from("0.1.0"),
             language: Language {
-                name: SupportedLanguage::Rust,
+                // name: SupportedLanguage::Rust,
+                name: String::from("Rust"),
                 version: String::from("1.48.0"),
             },
             formation: Formation {
-                shape: FormationShape::Lambda,
+                // shape: FormationShape::Lambda,
+                shape: String::from("Lambda"),
                 layer: String::from("amazon/aws-lambda-provided:al2"),
             },
         };
@@ -46,25 +48,27 @@ impl MesaPlan {
 
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct Language {
-    pub name: SupportedLanguage,
+    // pub name: SupportedLanguage,
+    pub name: String,
     pub version: String,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
-pub enum SupportedLanguage {
-    Rust,
-}
+// #[derive(Debug, Deserialize, PartialEq, Serialize)]
+// pub enum SupportedLanguage {
+//     Rust,
+// }
 
 #[derive(Deserialize, Serialize)]
 pub struct Formation {
-    pub shape: FormationShape,
+    // pub shape: FormationShape,
+    pub shape: String,
     pub layer: String,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
-pub enum FormationShape {
-    Lambda,
-}
+// #[derive(Debug, Deserialize, PartialEq, Serialize)]
+// pub enum FormationShape {
+//     Lambda,
+// }
 
 #[cfg(test)]
 mod tests {
