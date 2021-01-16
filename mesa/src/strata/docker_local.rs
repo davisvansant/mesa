@@ -79,7 +79,6 @@ impl DockerLocal {
         ignore_tests: bool,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut handlebars = Handlebars::new();
-
         let handlebars_dockerfile = r#"
 FROM {{builder}} AS builder
 
@@ -102,7 +101,6 @@ FROM {{formation}}
 COPY --from=builder /target/release/hello_world /var/runtime/bootstrap
 CMD ["mesa_handler"]
 "#;
-
         let source = Template::compile(&handlebars_dockerfile)?;
         handlebars.register_template("Dockerfile", source);
 
@@ -131,7 +129,6 @@ CMD ["mesa_handler"]
                 "formation": formation,
             }),
         };
-
         let mut dockerfile = File::create(dockerfile_path)?;
 
         handlebars.render_to_write("Dockerfile", &handlebars_data, &mut dockerfile)?;
@@ -144,7 +141,6 @@ CMD ["mesa_handler"]
         ignore_tests: bool,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let docker = Self::connect().await?;
-
         let mut temp_dir = std::env::temp_dir();
         temp_dir.push("mesa");
 
@@ -162,12 +158,9 @@ CMD ["mesa_handler"]
         .await?;
 
         let mut open_dockerfile = File::open(&dockerfile_path)?;
-
         let tar_gz = &temp_dir.join("Dockerfile.tar.gz");
 
         Self::create_and_build_tar(tar_gz, dockerfile, &mut open_dockerfile).await?;
-
-        let contents = Self::read_tar_contents(&tar_gz).await?;
 
         let mut tag = mesa_plan.name;
         tag.push(':');
@@ -181,7 +174,7 @@ CMD ["mesa_handler"]
             q: false,
             ..Default::default()
         };
-
+        let contents = Self::read_tar_contents(&tar_gz).await?;
         let build_image = docker
             .build_image(build_options, None, Some(contents.into()))
             .map_err(|error| println!("{}", error))
@@ -217,12 +210,10 @@ CMD ["mesa_handler"]
             })
             .try_collect::<Vec<_>>()
             .await;
-
         match build_image {
             Ok(_) => println!("mesa build | Build has completed"),
             Err(_) => println!("mesa build | Build was unsuccessful"),
         };
-
         Ok(())
     }
 
