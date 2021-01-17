@@ -42,6 +42,25 @@ impl MesaPlan {
     pub async fn excavate() -> Result<MesaPlan, Box<dyn Error>> {
         let file = read("test.toml")?;
         let plan: MesaPlan = toml::from_slice(&file)?;
+
+        match plan.language.name.as_str() {
+            "Rust" | "rust" => println!("mesa | language is verified and supported!"),
+            _ => {
+                println!("mesa | language is unsupported");
+                println!("mesa | exiting...");
+                std::process::exit(1);
+            }
+        };
+
+        match plan.formation.shape.as_str() {
+            "Lambda" | "lambda" => println!("mesa | formation is verified and supported!"),
+            _ => {
+                println!("mesa | formation is unsupported");
+                println!("mesa | exiting...");
+                std::process::exit(1);
+            }
+        }
+
         Ok(plan)
     }
 }
