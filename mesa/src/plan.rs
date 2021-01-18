@@ -53,7 +53,19 @@ impl MesaPlan {
         };
 
         match plan.formation.shape.as_str() {
-            "Lambda" | "lambda" => println!("mesa | formation is verified and supported!"),
+            "Lambda" | "lambda" => {
+                println!("mesa | formation is verified and supported!");
+                match plan.formation.layer.as_str() {
+                    "amazon/aws-lambda-provided:al2" | "amazon/aws-lambda-provided:alami" => {
+                        println!("mesa | formation layer is verified and supported!")
+                    }
+                    _ => {
+                        println!("mesa | formation layer is unsupported");
+                        println!("mesa | exiting...");
+                        std::process::exit(1);
+                    }
+                }
+            }
             _ => {
                 println!("mesa | formation is unsupported");
                 println!("mesa | exiting...");
