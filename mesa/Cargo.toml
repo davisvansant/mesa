@@ -24,6 +24,11 @@ default-features = false
 # version = "0.1.0"
 # path = "../mesa_strata"
 
+[dependencies.semver]
+version = "0.11.0"
+default-features = false
+features = []
+
 [dependencies.serde]
 version = "1.0.119"
 default-features = false
