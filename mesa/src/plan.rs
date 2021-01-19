@@ -1,3 +1,4 @@
+use semver::VersionReq;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 use std::fs::read;
@@ -42,6 +43,15 @@ impl MesaPlan {
     pub async fn excavate() -> Result<MesaPlan, Box<dyn Error>> {
         let file = read("test.toml")?;
         let plan: MesaPlan = toml::from_slice(&file)?;
+
+        match VersionReq::parse(plan.version.as_str()) {
+            Ok(_) => println!("mesa | plan version is semver compatible"),
+            Err(_) => {
+                println!("mesa | plan version is not semver compatible");
+                println!("mesa | exiting ...");
+                std::process::exit(1);
+            }
+        }
 
         match plan.language.name.as_str() {
             "Rust" | "rust" => println!("mesa | language is verified and supported!"),
