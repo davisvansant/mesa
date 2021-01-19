@@ -44,6 +44,15 @@ impl MesaPlan {
         let file = read("test.toml")?;
         let plan: MesaPlan = toml::from_slice(&file)?;
 
+        match !plan.name.as_str().is_empty() && !plan.name.as_str().contains(' ') {
+            true => println!("mesa | plan name is verified"),
+            false => {
+                println!("mesa | plan name contains invalid chars");
+                println!("mesa | exiting ...");
+                std::process::exit(1);
+            }
+        }
+
         match VersionReq::parse(plan.version.as_str()) {
             Ok(_) => println!("mesa | plan version is semver compatible"),
             Err(_) => {
