@@ -1,5 +1,5 @@
-pub async fn mesa_survey() -> Result<(), Box<dyn std::error::Error>> {
-    mesa::plan::MesaPlan::init().await?;
-    mesa::strata::docker_local::DockerLocal::survey().await?;
+pub async fn survey() -> Result<(), Box<dyn std::error::Error>> {
+    crate::plan::MesaPlan::init().await?;
+    crate::strata::docker_local::DockerLocal::survey().await?;
     Ok(())
 }
