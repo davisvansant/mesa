@@ -1,7 +1,5 @@
 use clap::{crate_name, crate_version, App, Arg, SubCommand};
 
-mod subcommand;
-
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let build = SubCommand::with_name("build")
@@ -39,15 +37,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     match mesa.subcommand() {
         ("build", Some(build_args)) => {
             if build_args.is_present("ignore-tests") {
-                subcommand::build::mesa_build(true).await?;
+                mesa::subcommand::build::build(true).await?;
             } else {
-                subcommand::build::mesa_build(false).await?;
+                mesa::subcommand::build::build(false).await?;
             }
         }
-        ("view", Some(_view_args)) => subcommand::view::mesa_view().await?,
-        ("erode", Some(_erode_args)) => subcommand::erode::mesa_erode().await?,
-        ("form", Some(_form_args)) => subcommand::form::mesa_form().await?,
-        ("survey", Some(_survey_args)) => subcommand::survey::mesa_survey().await?,
+        ("view", Some(_view_args)) => mesa::subcommand::view::view().await?,
+        ("erode", Some(_erode_args)) => mesa::subcommand::erode::erode().await?,
+        ("form", Some(_form_args)) => mesa::subcommand::form::form().await?,
+        ("survey", Some(_survey_args)) => mesa::subcommand::survey::survey().await?,
         _ => println!("{}", mesa.usage()),
     }
 
