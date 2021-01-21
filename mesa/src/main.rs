@@ -37,15 +37,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     match mesa.subcommand() {
         ("build", Some(build_args)) => {
             if build_args.is_present("ignore-tests") {
-                mesa::subcommand::build::build(true).await?;
+                mesa::subcommand::build(true).await?;
             } else {
-                mesa::subcommand::build::build(false).await?;
+                mesa::subcommand::build(false).await?;
             }
         }
-        ("view", Some(_view_args)) => mesa::subcommand::view::view().await?,
-        ("erode", Some(_erode_args)) => mesa::subcommand::erode::erode().await?,
-        ("form", Some(_form_args)) => mesa::subcommand::form::form().await?,
-        ("survey", Some(_survey_args)) => mesa::subcommand::survey::survey().await?,
+        ("view", Some(_view_args)) => mesa::subcommand::view().await?,
+        ("erode", Some(_erode_args)) => mesa::subcommand::erode().await?,
+        ("form", Some(_form_args)) => mesa::subcommand::form().await?,
+        ("survey", Some(_survey_args)) => mesa::subcommand::survey().await?,
         _ => println!("{}", mesa.usage()),
     }
 

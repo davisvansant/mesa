@@ -1,5 +1,11 @@
-pub mod build;
-pub mod erode;
-pub mod form;
-pub mod survey;
-pub mod view;
+mod build;
+mod erode;
+mod form;
+mod survey;
+mod view;
+
+pub use build::build;
+pub use erode::erode;
+pub use form::form;
+pub use survey::survey;
+pub use view::view;
