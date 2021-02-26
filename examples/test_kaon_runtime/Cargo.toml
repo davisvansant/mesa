@@ -1,0 +1,26 @@
+[package]
+name = "test_kaon_runtime"
+version = "0.1.0"
+authors = ["Davis Van Sant <davisvansant@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "hello_world"
+path = "src/main.rs"
+
+[dependencies]
+kaon = { git = "https://github.com/davisvansant/kaon", branch = "main" }
+serde = "1.0.123"
+serde_json = "1.0.63"
+
+[dependencies.tokio]
+version = "1.2.0"
+default-features = false
+features = [ "full" ]
+
+[dependencies.tracing-subscriber]
+version = "0.2.15"
+default_features = false
+features = [ "default" ]

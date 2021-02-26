@@ -1,0 +1,10 @@
+name = "test_kaon_runtime"
+version = "0.1.0"
+
+[language]
+name = "Rust"
+version = "1.50.0"
+
+[formation]
+shape = "Lambda"
+layer = "amazon/aws-lambda-provided:al2"
