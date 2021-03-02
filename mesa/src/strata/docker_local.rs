@@ -98,9 +98,10 @@ RUN {{ test_one }}
 RUN cargo build --release
 
 FROM {{formation}}
-COPY --from=builder /target/release/hello_world /var/runtime/bootstrap
-CMD ["mesa_handler"]
+COPY --from=builder /target/release/bootstrap /var/runtime/bootstrap
+CMD ["custom_runtime"]
 "#;
+
         let source = Template::compile(&handlebars_dockerfile)?;
         handlebars.register_template("Dockerfile", source);
 
