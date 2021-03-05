@@ -2,7 +2,7 @@ use crate::plan::MesaPlan;
 use bollard::container::{
     Config, CreateContainerOptions, RemoveContainerOptions, StartContainerOptions,
 };
-use bollard::image::{BuildImageOptions, RemoveImageOptions};
+use bollard::image::{BuildImageOptions, PruneImagesOptions, RemoveImageOptions};
 use bollard::models::{HostConfig, PortBinding};
 use bollard::Docker;
 use futures::TryStreamExt;
@@ -211,6 +211,21 @@ CMD ["custom_runtime"]
             })
             .try_collect::<Vec<_>>()
             .await;
+
+        let mut filters = HashMap::new();
+        filters.insert("dangling", vec!["true"]);
+        let options = Some(PruneImagesOptions { filters });
+
+        let prune_images = docker.prune_images(options).await;
+
+        match prune_images {
+            Ok(result) => {
+                let item = serde_json::to_string_pretty(&result.images_deleted)?;
+                println!("mesa build | prune intermediate {}", item);
+            }
+            Err(error) => println!("mesa build | {}", error),
+        }
+
         match build_image {
             Ok(_) => println!("mesa build | Build has completed"),
             Err(_) => println!("mesa build | Build was unsuccessful"),
