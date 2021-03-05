@@ -1,6 +1,7 @@
 use crate::plan::MesaPlan;
 use bollard::container::{
     Config, CreateContainerOptions, RemoveContainerOptions, StartContainerOptions,
+    StopContainerOptions,
 };
 use bollard::image::{BuildImageOptions, PruneImagesOptions, RemoveImageOptions};
 use bollard::models::{HostConfig, PortBinding};
@@ -248,18 +249,30 @@ CMD ["custom_runtime"]
         let mut tag = mesa_plan.name.clone();
         tag.push(':');
         tag.push_str(&mesa_plan.version);
-        let remove_image_options = Some(RemoveImageOptions {
-            force: true,
-            ..Default::default()
-        });
-        let remove_image = docker.remove_image(&tag, remove_image_options, None).await;
-        match remove_image {
-            Ok(result) => {
-                let result_details = serde_json::to_string_pretty(&result)?;
-                println!("mesa erode | {}", result_details);
-            }
-            Err(error) => println!("mesa erode | {}", &error),
-        };
+
+        let stop_container_options = Some(StopContainerOptions { t: 2 });
+        let stop_container = docker
+            .stop_container(&mesa_plan.name, stop_container_options)
+            .await;
+
+        match stop_container {
+            Ok(_) => println!("mesa erode | stopping {:?}", &mesa_plan.name),
+            Err(error) => println!("mesa erode | {:?}", error),
+        }
+
+        // let remove_image_options = Some(RemoveImageOptions {
+        //     force: true,
+        //     // ..Default::default()
+        //     noprune: false,
+        // });
+        // let remove_image = docker.remove_image(&tag, remove_image_options, None).await;
+        // match remove_image {
+        //     Ok(result) => {
+        //         let result_details = serde_json::to_string_pretty(&result)?;
+        //         println!("mesa erode | {}", result_details);
+        //     }
+        //     Err(error) => println!("mesa erode | {}", &error),
+        // };
 
         let options = Some(RemoveContainerOptions {
             v: true,
@@ -267,10 +280,26 @@ CMD ["custom_runtime"]
             link: false,
         });
         let erode = docker.remove_container(&mesa_plan.name, options).await;
+
         match erode {
             Ok(_) => println!("mesa erode | container {:#?} removed", &mesa_plan.name),
             Err(error) => println!("mesa erode | {}", error),
         }
+
+        let remove_image_options = Some(RemoveImageOptions {
+            force: true,
+            // ..Default::default()
+            noprune: false,
+        });
+        let remove_image = docker.remove_image(&tag, remove_image_options, None).await;
+
+        match remove_image {
+            Ok(result) => {
+                let result_details = serde_json::to_string_pretty(&result)?;
+                println!("mesa erode | {}", result_details);
+            }
+            Err(error) => println!("mesa erode | {}", &error),
+        };
 
         Ok(())
     }
