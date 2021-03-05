@@ -25,6 +25,21 @@ The response (note that currently `context` is set with a "fake" data via `kaon`
   }
 }
 ```
+Sending an invalid request
+
+```
+curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"test_reques": "something awesome"}' | jq
+```
+
+The response
+
+```
+{
+  "error_message": "missing field `test_request` at line 1 column 36",
+  "error_type": "Unhandled",
+  "stack_trace": "unused"
+}
+```
 
 | erode - ```cargo run --release --manifest-path ../../Cargo.toml --bin mesa erode```
 
