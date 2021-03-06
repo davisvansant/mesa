@@ -260,35 +260,22 @@ CMD ["custom_runtime"]
             Err(error) => println!("mesa erode | {:?}", error),
         }
 
-        // let remove_image_options = Some(RemoveImageOptions {
-        //     force: true,
-        //     // ..Default::default()
-        //     noprune: false,
-        // });
-        // let remove_image = docker.remove_image(&tag, remove_image_options, None).await;
-        // match remove_image {
-        //     Ok(result) => {
-        //         let result_details = serde_json::to_string_pretty(&result)?;
-        //         println!("mesa erode | {}", result_details);
-        //     }
-        //     Err(error) => println!("mesa erode | {}", &error),
-        // };
-
-        let options = Some(RemoveContainerOptions {
+        let remove_container_options = Some(RemoveContainerOptions {
             v: true,
             force: true,
             link: false,
         });
-        let erode = docker.remove_container(&mesa_plan.name, options).await;
+        let remove_container = docker
+            .remove_container(&mesa_plan.name, remove_container_options)
+            .await;
 
-        match erode {
+        match remove_container {
             Ok(_) => println!("mesa erode | container {:#?} removed", &mesa_plan.name),
             Err(error) => println!("mesa erode | {}", error),
         }
 
         let remove_image_options = Some(RemoveImageOptions {
             force: true,
-            // ..Default::default()
             noprune: false,
         });
         let remove_image = docker.remove_image(&tag, remove_image_options, None).await;
