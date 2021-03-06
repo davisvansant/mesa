@@ -2,6 +2,14 @@
 
 An example that uses `kaon` as a custom Lambda runtime and `mesa` to build a container and test locally
 
+Note also the need (currently) to set the following in `Cargo.toml`
+
+```
+[[bin]]
+name = "bootstrap"
+path = "src/main.rs"
+```
+
 | survey - `cargo run --release --manifest-path ../../Cargo.toml --bin mesa survey`
 
 | build - `cargo run --release --manifest-path ../../Cargo.toml --bin mesa build`
