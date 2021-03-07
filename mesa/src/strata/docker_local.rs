@@ -294,9 +294,11 @@ CMD ["custom_runtime"]
 
     pub async fn view(mesa_plan: MesaPlan) -> Result<(), Box<dyn std::error::Error>> {
         let docker = Self::connect().await?;
+
         let mut container_ports = HashMap::new();
         let host_ports = HashMap::new();
         container_ports.insert(String::from("8080/tcp"), host_ports);
+
         let mut port_bindings = HashMap::new();
         port_bindings.insert(
             String::from("8080/tcp"),
@@ -305,17 +307,21 @@ CMD ["custom_runtime"]
                 host_port: Some(String::from("9000")),
             }]),
         );
+
         let container_host_config = HostConfig {
             port_bindings: Some(port_bindings),
             ..Default::default()
         };
+
         let container_name = mesa_plan.name.clone();
         let mut tag = mesa_plan.name.clone();
         tag.push(':');
         tag.push_str(&mesa_plan.version);
+
         let create_container_options = Some(CreateContainerOptions {
             name: &container_name,
         });
+
         let create_container_config = Config {
             image: Some(tag),
             exposed_ports: Some(container_ports),
@@ -326,6 +332,7 @@ CMD ["custom_runtime"]
         let create_container = docker
             .create_container(create_container_options, create_container_config)
             .await;
+
         match create_container {
             Ok(result) => {
                 let result_details = serde_json::to_string_pretty(&result)?;
