@@ -215,9 +215,9 @@ CMD ["custom_runtime"]
 
         let mut filters = HashMap::new();
         filters.insert("dangling", vec!["true"]);
-        let options = Some(PruneImagesOptions { filters });
 
-        let prune_images = docker.prune_images(options).await;
+        let prune_images_options = Some(PruneImagesOptions { filters });
+        let prune_images = docker.prune_images(prune_images_options).await;
 
         match prune_images {
             Ok(result) => {
@@ -231,6 +231,7 @@ CMD ["custom_runtime"]
             Ok(_) => println!("mesa build | Build has completed"),
             Err(_) => println!("mesa build | Build was unsuccessful"),
         };
+
         Ok(())
     }
 
