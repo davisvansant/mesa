@@ -168,7 +168,7 @@ CMD ["custom_runtime"]
         tag.push(':');
         tag.push_str(&mesa_plan.version);
 
-        let build_options = BuildImageOptions {
+        let build_image_options = BuildImageOptions {
             dockerfile: "Dockerfile.mesa",
             t: &tag,
             rm: true,
@@ -178,7 +178,7 @@ CMD ["custom_runtime"]
         };
         let contents = Self::read_tar_contents(&tar_gz).await?;
         let build_image = docker
-            .build_image(build_options, None, Some(contents.into()))
+            .build_image(build_image_options, None, Some(contents.into()))
             .map_err(|error| println!("{}", error))
             .map_ok(|ok| {
                 match ok.id {
