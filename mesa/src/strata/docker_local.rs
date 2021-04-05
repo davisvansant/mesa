@@ -13,7 +13,7 @@ use serde_json::json;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
-use std::path::PathBuf;
+use std::path::Path;
 
 pub struct DockerLocal {}
 
@@ -51,7 +51,7 @@ impl DockerLocal {
     }
 
     async fn create_and_build_tar(
-        tar_gz: &PathBuf,
+        tar_gz: &Path,
         path: String,
         file: &mut File,
     ) -> Result<(), Box<dyn std::error::Error>> {
@@ -65,7 +65,7 @@ impl DockerLocal {
         Ok(())
     }
 
-    async fn read_tar_contents(tar_gz: &PathBuf) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    async fn read_tar_contents(tar_gz: &Path) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
         let mut file = File::open(&tar_gz)?;
         let mut contents = Vec::new();
         file.read_to_end(&mut contents)?;
@@ -74,7 +74,7 @@ impl DockerLocal {
     }
 
     async fn create_and_build_dockerfile(
-        dockerfile_path: &PathBuf,
+        dockerfile_path: &Path,
         builder_version: &str,
         formation: &str,
         ignore_tests: bool,
