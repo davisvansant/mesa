@@ -14,32 +14,32 @@ version = "2.33.3"
 default-features = false
 
 [dependencies.futures]
-version = "0.3.9"
+version = "0.3.15"
 
 [dependencies.handlebars]
-version = "3.5.2"
+version = "4.0.1"
 default-features = false
 
 [dependencies.semver]
-version = "0.11.0"
+version = "1.0.3"
 default-features = false
 features = []
 
 [dependencies.serde]
-version = "1.0.119"
+version = "1.0.126"
 default-features = false
 features = [ "derive" ]
 
 [dependencies.serde_json]
-version = "1.0.61"
+version = "1.0.64"
 default-features = false
 features = [ "std" ]
 
 [dependencies.tar]
-version = "0.4.30"
+version = "0.4.35"
 
 [dependencies.tokio]
-version = "1.4.0"
+version = "1.7.0"
 default-features = false
 features = [ "full" ]
 
