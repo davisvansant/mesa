@@ -137,7 +137,7 @@ mod tests {
         MesaPlan::init().await.unwrap();
         let open_test_mesa_plan = std::fs::File::open("test.toml").unwrap();
         let metadata = open_test_mesa_plan.metadata().unwrap();
-        assert_eq!(metadata.is_file(), true);
+        assert!(metadata.is_file());
     }
 
     // #[tokio::test]
