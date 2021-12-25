@@ -7,39 +7,39 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies.bollard]
-version = "0.10.1"
+version = "0.11.1"
 
 [dependencies.clap]
-version = "2.33.3"
+version = "2.34.0"
 default-features = false
 
 [dependencies.futures]
-version = "0.3.15"
+version = "0.3.19"
 
 [dependencies.handlebars]
-version = "4.0.1"
+version = "4.1.6"
 default-features = false
 
 [dependencies.semver]
-version = "1.0.3"
+version = "1.0.4"
 default-features = false
 features = []
 
 [dependencies.serde]
-version = "1.0.126"
+version = "1.0.132"
 default-features = false
 features = [ "derive" ]
 
 [dependencies.serde_json]
-version = "1.0.64"
+version = "1.0.73"
 default-features = false
 features = [ "std" ]
 
 [dependencies.tar]
-version = "0.4.35"
+version = "0.4.38"
 
 [dependencies.tokio]
-version = "1.7.0"
+version = "1.15.0"
 default-features = false
 features = [ "full" ]
 
