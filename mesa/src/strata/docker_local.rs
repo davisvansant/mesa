@@ -26,7 +26,7 @@ impl DockerLocal {
         temp_dir: &std::path::Path,
     ) -> Result<(), Box<dyn std::error::Error>> {
         if temp_dir.exists() {
-            Self::cleanup_temporary_directory(&temp_dir).await?;
+            Self::cleanup_temporary_directory(temp_dir).await?;
             std::fs::create_dir(&temp_dir)?;
         } else {
             std::fs::create_dir(&temp_dir)?;
@@ -103,13 +103,13 @@ COPY --from=builder /target/release/bootstrap /var/runtime/bootstrap
 CMD ["custom_runtime"]
 "#;
 
-        let source = Template::compile(&handlebars_dockerfile)?;
+        let source = Template::compile(handlebars_dockerfile)?;
         handlebars.register_template("Dockerfile", source);
 
         let mut builder = String::with_capacity(20);
         builder.push_str("rust");
         builder.push(':');
-        builder.push_str(&builder_version);
+        builder.push_str(builder_version);
 
         let handlebars_data = match ignore_tests {
             false => json! ({
@@ -152,7 +152,7 @@ CMD ["custom_runtime"]
         let dockerfile_path = &temp_dir.join(&dockerfile);
 
         Self::create_and_build_dockerfile(
-            &dockerfile_path,
+            dockerfile_path,
             &mesa_plan.language.version,
             &mesa_plan.formation.layer,
             ignore_tests,
@@ -176,7 +176,7 @@ CMD ["custom_runtime"]
             q: false,
             ..Default::default()
         };
-        let contents = Self::read_tar_contents(&tar_gz).await?;
+        let contents = Self::read_tar_contents(tar_gz).await?;
         let build_image = docker
             .build_image(build_image_options, None, Some(contents.into()))
             .map_err(|error| println!("{}", error))
