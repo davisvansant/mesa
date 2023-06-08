@@ -38,8 +38,9 @@ impl MesaPlan {
     }
 
     pub async fn excavate() -> Result<MesaPlan, Box<dyn Error>> {
-        let file = read("test.toml")?;
-        let plan: MesaPlan = toml::from_slice(&file)?;
+        let toml_bytes = read("test.toml")?;
+        let toml_string = String::from_utf8(toml_bytes)?;
+        let plan: MesaPlan = toml::from_str(&toml_string)?;
 
         match !plan.name.as_str().is_empty() && !plan.name.as_str().contains(' ') {
             true => println!("mesa | plan name is verified"),

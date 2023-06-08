@@ -27,9 +27,9 @@ impl DockerLocal {
     ) -> Result<(), Box<dyn std::error::Error>> {
         if temp_dir.exists() {
             Self::cleanup_temporary_directory(temp_dir).await?;
-            std::fs::create_dir(&temp_dir)?;
+            std::fs::create_dir(temp_dir)?;
         } else {
-            std::fs::create_dir(&temp_dir)?;
+            std::fs::create_dir(temp_dir)?;
         }
 
         Ok(())
@@ -38,14 +38,14 @@ impl DockerLocal {
     async fn cleanup_temporary_directory(
         temp_dir: &std::path::Path,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let dir = std::fs::read_dir(&temp_dir)?;
+        let dir = std::fs::read_dir(temp_dir)?;
         for file in dir {
             let file = file?;
             let path = file.path();
             std::fs::remove_file(&path)?;
             println!("mesa build | removed {:?}", &path);
         }
-        std::fs::remove_dir(&temp_dir)?;
+        std::fs::remove_dir(temp_dir)?;
         println!("mesa build | removed {:?}", &temp_dir);
         Ok(())
     }
@@ -55,7 +55,7 @@ impl DockerLocal {
         path: String,
         file: &mut File,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let create_tar_gz = File::create(&tar_gz)?;
+        let create_tar_gz = File::create(tar_gz)?;
         let mut tar = tar::Builder::new(&create_tar_gz);
         let current_dir = std::env::current_dir()?;
         tar.append_file(path, file)?;
@@ -66,7 +66,7 @@ impl DockerLocal {
     }
 
     async fn read_tar_contents(tar_gz: &Path) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-        let mut file = File::open(&tar_gz)?;
+        let mut file = File::open(tar_gz)?;
         let mut contents = Vec::new();
         file.read_to_end(&mut contents)?;
         println!("mesa build | tar is ready");
@@ -159,7 +159,7 @@ CMD ["custom_runtime"]
         )
         .await?;
 
-        let mut open_dockerfile = File::open(&dockerfile_path)?;
+        let mut open_dockerfile = File::open(dockerfile_path)?;
         let tar_gz = &temp_dir.join("Dockerfile.tar.gz");
 
         Self::create_and_build_tar(tar_gz, dockerfile, &mut open_dockerfile).await?;
@@ -320,6 +320,7 @@ CMD ["custom_runtime"]
 
         let create_container_options = Some(CreateContainerOptions {
             name: &container_name,
+            platform: None,
         });
 
         let create_container_config = Config {
