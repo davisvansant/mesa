@@ -7,31 +7,31 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies.bollard]
-version = "0.11.1"
+version = "0.14.0"
 
 [dependencies.clap]
 version = "2.34.0"
 default-features = false
 
 [dependencies.futures]
-version = "0.3.19"
+version = "0.3.28"
 
 [dependencies.handlebars]
-version = "4.1.6"
+version = "4.3.7"
 default-features = false
 
 [dependencies.semver]
-version = "1.0.4"
+version = "1.0.17"
 default-features = false
 features = []
 
 [dependencies.serde]
-version = "1.0.132"
+version = "1.0.164"
 default-features = false
 features = [ "derive" ]
 
 [dependencies.serde_json]
-version = "1.0.73"
+version = "1.0.96"
 default-features = false
 features = [ "std" ]
 
@@ -39,9 +39,9 @@ features = [ "std" ]
 version = "0.4.38"
 
 [dependencies.tokio]
-version = "1.15.0"
+version = "1.28.2"
 default-features = false
 features = [ "full" ]
 
 [dependencies.toml]
-version = "0.5.8"
+version = "0.7.4"
